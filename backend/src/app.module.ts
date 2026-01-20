@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import {TypeOrmModule} from '@nestjs/typeorm'
 import { GenreModule } from './genre/genre.module';
 import { ProductModule } from './product/product.module';
+import { ProductGenreModule } from './product-genre/product-genre.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 
@@ -26,6 +27,7 @@ import { join } from 'path';
     }),
     GenreModule,
     ProductModule,
+    ProductGenreModule,
   ],
   controllers: [AppController],
   providers: [AppService],

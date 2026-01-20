@@ -10,6 +10,12 @@ export class Genre{
     name: string;
     // could be comedy, action
 
+    @Column({nullable: true})
+    image: string;
+
+    @Column({ type: 'text', nullable: true })
+    svgIcon: string;
+
     @ManyToMany(() => Product, (product) => product.genres)
     products: Product[];
 }

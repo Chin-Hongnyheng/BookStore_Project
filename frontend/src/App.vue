@@ -1,37 +1,34 @@
 <template>
-  <div>
-    <BookComponent
-    v-for="product in productStore.discountedProducts"
-    :key="product.id"
-    :product="product"
-    :title="product.title"
-    :author="product.author"
-    :price="product.price"
-    :discount="product.discount"
-    :finalPrice="product.finalPrice"
-    :image="'http://localhost:3000/uploads/products/' + product.image"
-    :rating="product.rating"
-    />
-
+  <div class="app">
+  <HeaderComponent />
+  <!-- dynamic view -->
+  <!-- router-view-> index.js -> redirect to Homeview -> check Route if have /HomeView? -> Render the Content -->
+  <router-view />
+  <FooterComponent />
   </div>
 </template>
 
 <script lang="ts">
-import BookComponent from './components/BookComponent.vue';
-import { useBookStore } from './stores/BookData';
+import HeaderComponent from './components/HeaderComponent.vue';
+import FooterComponent from './components/FooterComponent.vue'
 
 export default {
   name: 'App.vue',
-  setup() {
-    const productStore = useBookStore();
-    productStore.fetchGenres();
-    productStore.fetchProducts();
-    return {
-      productStore,
-    };
-  },
   components: {
-    BookComponent,
+    HeaderComponent,
+    FooterComponent,
   },
 };
 </script>
+<style>
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+.app {
+  width: 100vw;      /* Always equal to the screen width */
+  min-height: 100vh; /* At least full screen height */
+}
+</style>

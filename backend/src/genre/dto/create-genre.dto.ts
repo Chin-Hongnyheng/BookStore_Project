@@ -1,6 +1,9 @@
-import { IsString } from 'class-validator'
+import { IsString, IsOptional } from 'class-validator'
 export class CreateGenreDto{
     @IsString()
     name: string;
-    // could provide action, comedy from client
+    
+    @IsOptional()
+    @IsString()
+    svgIcon?: string;
 }

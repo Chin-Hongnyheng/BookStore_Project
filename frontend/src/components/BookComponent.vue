@@ -1,7 +1,8 @@
 <template>
   <div class="book">
+    <!-- Book Image -->
     <div class="image-style">
-      <img :src="image" />
+      <img :src="image" alt="Book Image" />
     </div>
 
     <!-- Rating Box -->
@@ -10,13 +11,39 @@
       <span class="rating">{{ rating }}</span>
     </div>
 
+    <!-- Author & Title -->
     <div class="title-author">
       <span class="author-style">{{ author }}</span>
       <span class="title-style">{{ title }}</span>
     </div>
-    <div>{{ price }}</div>
-    <div>{{ finalPrice }}</div>
-    <div>{{ discount }}</div>
+
+    <!-- Price Section -->
+    <div class="price-section">
+      <!-- NO DISCOUNT -->
+      <span
+        v-if="discount === 0"
+        class="finalPrice-style"
+      >
+        ${{ price.toFixed(2) }}
+      </span>
+
+      <!-- WITH DISCOUNT -->
+      <template v-else>
+        <span class="price-style">${{ price.toFixed(2) }}</span>
+        <div class="finalPrice-discount">
+          <span class="finalPrice-style">
+            ${{ finalPrice.toFixed(2) }}
+          </span>
+          <span class="discount-style">{{ discount }}% Off</span>
+        </div>
+      </template>
+    </div>
+
+    <button class="button-btn">
+      Add To Cart
+      <font-awesome-icon icon="shopping-cart"/>
+    </button>
+
   </div>
 </template>
 
@@ -37,20 +64,28 @@ export default {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap');
+/* Import Nunito font */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap');
 
 .book {
-  width: 257px;
-  height: 654px;
+  width: 267px;
+  /* height: 654px; */
   display: flex;
   flex-direction: column;
+  gap: 12px;
+  font-family: 'Nunito', sans-serif;
 }
 
 .image-style {
   width: 100%;
-  height: 383px;
+  aspect-ratio: 2 / 3;
   border-radius: 20px;
   overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.image-style:hover {
+  transform: scale(1.05);
 }
 
 .image-style img {
@@ -58,6 +93,7 @@ export default {
   height: 100%;
   object-fit: cover;
   border-radius: 20px;
+  object-position: center;
 }
 
 /* Rating Box */
@@ -69,40 +105,108 @@ export default {
   border-radius: 40px;
 
   display: flex;
-  align-items: center;     /* vertical center */
-  justify-content: center; /* horizontal center */
-  gap: 2px;               
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
 }
 
 .star {
   color: yellow;
   font-size: 25px;
-  line-height: 25px;
+  line-height: 20px;
 }
 
 .rating {
-  font-family: 'Urbanist', sans-serif;
   font-size: 22px;
   color: white;
-  font-weight:600;
+  font-weight: 600;
 }
-.title-author{
-  display:flex;
-  flex-direction:column;
-  gap: 12px;
+
+/* Author & Title */
+.title-author {
+  display: flex;
+  flex-direction: column;
   align-items: flex-start;
+  gap: 4px;
 }
-.author-style{
-  font-family: 'Urbanist', sans-serif;
+
+.author-style {
   font-size: 16px;
-  color: 848C8E;
+  color: rgb(150, 149, 149);
 }
-.title-style{
-  font-size: 22x;
-  font-family: 'Urbanist', sans-serif;
-  color: black;
+
+.title-style {
+  font-size: 22px;
   font-weight: bold;
+  color: black;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  line-height: 1.3;
+  /* reserve space for 2 lines */
+  min-height: calc(1.3em * 2);
 }
 
+/* Price Section */
+.price-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
 
+.price-style {
+  font-size: 16px;
+  color: rgb(150, 149, 149);
+  text-decoration: line-through;
+  text-decoration-color: rgb(150, 149, 149);
+}
+
+.finalPrice-discount {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.finalPrice-style {
+  font-size: 20px;
+  font-weight: bold;
+  color: black;
+}
+
+.discount-style {
+  font-size: 18px;
+  font-weight: bolder;
+  color: orange;
+}
+.button-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* center icon + text horizontally */
+  gap: 8px;
+  padding: 10px 28px;
+  background-color: #3255FB;
+  color: white;
+  border: none;
+  font-weight: bold;
+  border-radius: 40px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 20px;
+  cursor: pointer;
+  margin-top: auto;
+  transition: transform 0.3s ease, background-color 0.3s;
+}
+
+.button-btn:hover {
+  background-color: #2643d6;
+  transform: scale(1.1);
+}
+
+.button-btn svg {
+  font-size: 18px;
+}
 </style>

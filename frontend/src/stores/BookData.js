@@ -5,9 +5,11 @@ export const useBookStore = defineStore('book', {
   state: () => ({
     products: [],
     genres: [],
+    genreCounts:[],
   }),
 
   getters: {
+    
     discountedProducts(state) {
       return state.products.map((p) => ({
         ...p,
@@ -20,6 +22,19 @@ export const useBookStore = defineStore('book', {
         finalPrice: Number(p.price) - (Number(p.price) * Number(p.discount ?? 0)) / 100,
         genreIds: p.genres?.map((g) => g.id) || [],
       }));
+    },
+
+    genresWithCount(state) {
+      return state.genres.map((genre) => {
+        const match = state.genreCounts.find(
+          (g) => g.genre_id === genre.id
+        );
+
+        return {
+          ...genre,
+          total: match ? Number(match.total) : 0,
+        };
+      });
     },
   },
 
@@ -41,6 +56,19 @@ export const useBookStore = defineStore('book', {
         console.log('Products fetched successfully');
       } catch (error) {
         console.error('Failed to fetch products:', error);
+      }
+    },
+
+    // NEW: fetch the join table
+    async fetchGenreCounts() {
+      try{
+        const res = await axios.get(
+        'http://localhost:3000/product_genres/count'
+      );
+      this.genreCounts = res.data;
+      console.log('GenreCounts fetched successfully');
+      }catch (error) {
+        console.error('Failed to fetch GenreCounts:', error);
       }
     },
   },
