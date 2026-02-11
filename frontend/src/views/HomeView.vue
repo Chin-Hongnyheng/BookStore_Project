@@ -21,10 +21,12 @@
           <div class="genre-style">
             <GenreComponent 
               v-for="genre in productStore.genresWithCount"
+              :genre="genre"
               :key="genre.id"
               :name="genre.name"
               :count="genre.total"
               :svg-icon="genre.svgIcon"
+              @genre-clicked="goToGenre"
             />
           </div>
       </div>
@@ -36,8 +38,8 @@
       <div class="book-style">
         <BookComponent
         v-for="product in visibleProducts"
-        :key="product.id"
         :product="product"
+        :key="product.id"
         :title="product.title"
         :author="product.author"
         :price="product.price"
@@ -45,6 +47,7 @@
         :finalPrice="product.finalPrice"
         :image="'http://localhost:3000/uploads/products/' + product.image"
         :rating="product.rating"
+        @book-clicked="goToBookProduct"
         />
       </div>
     </div>
@@ -74,9 +77,11 @@ export default {
   name: 'HomeView',
   setup() {
     const productStore = useBookStore();
-    productStore.fetchGenres();
-    productStore.fetchProducts();
-    productStore.fetchGenreCounts();
+     if (!productStore.products.length) {
+      productStore.fetchProducts()
+      productStore.fetchGenres()
+      productStore.fetchGenreCounts()
+    }
 
     const visibleCount = ref(10)
 
@@ -123,9 +128,17 @@ export default {
     ReadMoreComponent,
     GenreComponent,
   },
+  methods:{
+    goToBookProduct(product: any){
+      this.$router.push(`/books/${product.id}`)
+    },
+    goToGenre(genre:any){
+      this.$router.push(`/${genre.name}/${genre.id}`)
+    }
+  }
 };
 </script>
-<style>
+<style scoped>
   .homepage-container{
     display:flex;
     flex-direction: column;

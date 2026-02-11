@@ -22,7 +22,7 @@
         },
     };
 </script>
-<style>
+<style scoped>
 .book-display {
   width: 267px;
   /* height: 654px; */

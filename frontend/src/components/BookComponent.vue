@@ -1,5 +1,5 @@
 <template>
-  <div class="book">
+  <div class="book" @click="handleClick">
     <!-- Book Image -->
     <div class="image-style">
       <img :src="image" alt="Book Image" />
@@ -60,6 +60,11 @@ export default {
     image: { type: String, required: true },
     rating: { type: Number, required: true },
   },
+  methods:{
+    handleClick() {
+      this.$emit('book-clicked', this.product)
+    },
+  }
 };
 </script>
 

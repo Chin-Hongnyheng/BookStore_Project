@@ -16,7 +16,6 @@ import { RefreshToken } from '../entities/refresh-token.entity';
 import { Role } from 'src/entities/roles.entity';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import { OAuth2Client } from 'google-auth-library';
 
 @Injectable()
 export class AuthService {
