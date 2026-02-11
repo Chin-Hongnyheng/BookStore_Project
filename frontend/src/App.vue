@@ -44,8 +44,10 @@ body {
   overflow-x: hidden;
   font-family: 'Nunito';
 }
+
 .app {
-  width: 100vw;      /* Always equal to the screen width */
-  min-height: 100vh; /* At least full screen height */
+  width: 100%;
+  min-height: 100vh;
 }
 </style>
+  

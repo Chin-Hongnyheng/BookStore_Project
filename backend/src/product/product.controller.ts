@@ -48,6 +48,16 @@ export class ProductController {
     return this.productService.create(dto, file);
   }
 
+  @Post(':id/image')
+  @UseInterceptors(FileInterceptor('image', multerOptions))
+  async uploadImage(
+    @Param('id', ParseIntPipe) id: number,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    // Only updates the image column
+    return this.productService.update(id, {}, file); // empty DTO, just file
+  }
+
   @Patch(':id')
   @UseInterceptors(FileInterceptor('image', multerOptions))
   update(

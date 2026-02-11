@@ -1,9 +1,13 @@
-import { IsString, IsOptional } from 'class-validator'
-export class CreateGenreDto{
-    @IsString()
-    name: string;
-    
-    @IsOptional()
-    @IsString()
-    svgIcon?: string;
+import { IsString, IsOptional } from 'class-validator';
+export class CreateGenreDto {
+  @IsString()
+  name: string;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @IsOptional()
+  @IsString()
+  svgIcon?: string;
 }

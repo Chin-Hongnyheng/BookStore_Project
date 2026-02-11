@@ -47,6 +47,14 @@ export class GenreController {
   ) {
     return this.genreService.create(dto, file);
   }
+  @Post(':id/image')
+  @UseInterceptors(FileInterceptor('image', multerOptions))
+  async uploadImage(
+    @Param('id', ParseIntPipe) id: number,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.genreService.update(id, {}, file);
+  }
 
   @Patch(':id')
   @UseInterceptors(FileInterceptor('image', multerOptions))
