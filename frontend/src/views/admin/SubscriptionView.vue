@@ -179,8 +179,8 @@
 import { ref, reactive, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useSubscriptionStore } from '@/stores/subscriptionStore'
-import DataTable from '@/components/DataTable.vue'
-import Modal from '@/components/Modal.vue'
+import DataTable from '@/components/admin/DataTable.vue'
+import Modal from '@/components/admin/Modal.vue'
 
 const route = useRoute()
 const subscriptionStore = useSubscriptionStore()

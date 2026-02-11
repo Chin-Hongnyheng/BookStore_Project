@@ -16,7 +16,7 @@
     async create(dto: CreateGenreDto, file?: Express.Multer.File) {
       const genre = this.genreRepo.create({
         ...dto,
-        image: file?.filename || '',
+        image: file?.filename || null,
       });
 
       this.logger.log('Genre created');

@@ -132,8 +132,8 @@ import { useGenreStore } from '@/stores/genreStore'
 import { useBookStore } from '@/stores/bookStore'
 import { usePromotionStore } from '@/stores/promotionStore'
 import { useSubscriptionStore } from '@/stores/subscriptionStore'
-import StatCard from '@/components/StatCard.vue'
-import Chart from '@/components/Chart.vue'
+import StatCard from '@/components/admin/StatCard.vue'
+import Chart from '@/components/admin/Chart.vue'
 
 const route = useRoute()
 const dashboardStore = useDashboardStore()

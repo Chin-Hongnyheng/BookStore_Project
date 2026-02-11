@@ -19,7 +19,8 @@ export class ProductService {
 
     const product = this.productRepo.create({
       ...dto,
-      image: file?.filename || '', // store filename only
+      published: dto.published || null, // convert empty string to null
+      image: file?.filename || null, // store filename only, null if no file
       genres,
     });
     console.log("Data created");
@@ -41,6 +42,12 @@ export class ProductService {
 
   async update(id: number, dto: Partial<CreateProductDto>, file?: Express.Multer.File) {
     const product = await this.findOne(id);
+
+    // Handle empty string for published date
+    if (dto.published === '') {
+      dto.published = undefined;
+      product.published = null;
+    }
 
     Object.assign(product, dto);
 

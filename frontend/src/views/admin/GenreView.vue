@@ -74,8 +74,8 @@
 import { ref, reactive, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useGenreStore } from '@/stores/genreStore'
-import DataTable from '@/components/DataTable.vue'
-import Modal from '@/components/Modal.vue'
+import DataTable from '@/components/admin/DataTable.vue'
+import Modal from '@/components/admin/Modal.vue'
 
 const route = useRoute()
 const genreStore = useGenreStore()

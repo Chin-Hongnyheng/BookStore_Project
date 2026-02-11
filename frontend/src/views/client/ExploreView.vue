@@ -51,9 +51,9 @@
 <script>
 import { ref } from 'vue'
 import { useBookStore } from '@/stores/BookData';
-import CategoryComponent from '@/components/CategoryComponent.vue';
-import BookComponent from '@/components/BookComponent.vue';
-import ShowcaseV2Component from '@/components/ShowcaseV2Component.vue';
+import CategoryComponent from '@/components/client/CategoryComponent.vue';
+import BookComponent from '@/components/client/BookComponent.vue';
+import ShowcaseV2Component from '@/components/client/ShowcaseV2Component.vue';
 
 export default{
     name:'ExploreView',
