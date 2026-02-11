@@ -62,6 +62,7 @@ export default{
 
             productStore.fetchGenres();
             productStore.fetchProducts();
+            productStore.fetchPromotions();
 
         const bookScroll = ref(null);
         const scrollAmount = 266; // width of one genre + gap

@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import {TypeOrmModule} from '@nestjs/typeorm'
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { GenreModule } from './genre/genre.module';
 import { ProductModule } from './product/product.module';
 import { ProductGenreModule } from './product-genre/product-genre.module';
+import { PromotionModule } from './promotion/promotion.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 
@@ -17,9 +18,9 @@ import { join } from 'path';
       username: 'postgres',
       password: 'postgres',
       database: 'bookstore',
-      entities:[__dirname + '/**/*.entity{.ts,.js}'],
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
       autoLoadEntities: true,
-      synchronize:true,
+      synchronize: true,
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'), // serve /uploads folder
@@ -28,6 +29,7 @@ import { join } from 'path';
     GenreModule,
     ProductModule,
     ProductGenreModule,
+    PromotionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,66 +1,24 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { promotionApi } from '@/services/promotionApi'
 
 export const usePromotionStore = defineStore('promotion', () => {
-  const promotions = ref([
-    {
-      id: 1,
-      name: 'Summer Sale',
-      type: 'Sale',
-      discount: 20,
-      startDate: '2026-06-01',
-      endDate: '2026-08-31',
-      books: [1, 2, 4],
-      status: 'Active',
-      description: 'Summer discount on selected books',
-    },
-    {
-      id: 2,
-      name: 'New Year 30% Off',
-      type: '% Off',
-      discount: 30,
-      startDate: '2026-01-01',
-      endDate: '2026-01-31',
-      books: [1, 3, 5],
-      status: 'Active',
-      description: 'New Year special promotion',
-    },
-    {
-      id: 3,
-      name: 'Best Sellers',
-      type: 'Hot Badge',
-      discount: 0,
-      startDate: '2026-01-20',
-      endDate: '2026-12-31',
-      books: [2, 3],
-      status: 'Active',
-      description: 'Mark best-selling books with Hot badge',
-    },
-    {
-      id: 4,
-      name: 'Flash Sale',
-      type: 'Sale',
-      discount: 15,
-      startDate: '2026-02-01',
-      endDate: '2026-02-07',
-      books: [4, 5],
-      status: 'Upcoming',
-      description: 'Limited time flash sale',
-    },
-  ])
-
+  const promotions = ref([])
   const loading = ref(false)
   const error = ref(null)
 
-  // Fetch promotions (currently uses static data as fallback)
+  // Fetch promotions from backend
   const fetchPromotions = async () => {
     loading.value = true
     error.value = null
     try {
-      // Currently static data - replace with API call when backend is ready
-      // const response = await fetch('http://localhost:3000/promotions')
-      // promotions.value = await response.json()
-      console.log('Promotions loaded (using static data)')
+      const data = await promotionApi.getAllPromotions()
+      // Transform data to include books array (product IDs)
+      promotions.value = data.map(promo => ({
+        ...promo,
+        books: promo.products ? promo.products.map(p => p.id) : [],
+      }))
+      console.log('Promotions loaded:', promotions.value.length, 'items')
     } catch (err) {
       error.value = err.message
       console.error('Failed to fetch promotions:', err)
@@ -69,21 +27,80 @@ export const usePromotionStore = defineStore('promotion', () => {
     }
   }
 
-  const addPromotion = (promotion) => {
-    promotion.id = Math.max(...promotions.value.map((p) => p.id), 0) + 1
-    promotion.status = 'Upcoming'
-    promotions.value.push(promotion)
-  }
-
-  const updatePromotion = (id, updatedPromotion) => {
-    const index = promotions.value.findIndex((p) => p.id === id)
-    if (index !== -1) {
-      promotions.value[index] = { ...promotions.value[index], ...updatedPromotion }
+  const addPromotion = async (promotionData) => {
+    loading.value = true
+    error.value = null
+    try {
+      // Convert books array to productIds
+      const payload = {
+        name: promotionData.name,
+        type: promotionData.type,
+        discount: promotionData.discount || 0,
+        startDate: promotionData.startDate,
+        endDate: promotionData.endDate,
+        description: promotionData.description,
+        productIds: promotionData.books || [],
+      }
+      const newPromotion = await promotionApi.createPromotion(payload)
+      promotions.value.push({
+        ...newPromotion,
+        books: newPromotion.products ? newPromotion.products.map(p => p.id) : [],
+      })
+      return newPromotion
+    } catch (err) {
+      error.value = err.message
+      console.error('Failed to add promotion:', err)
+      throw err
+    } finally {
+      loading.value = false
     }
   }
 
-  const deletePromotion = (id) => {
-    promotions.value = promotions.value.filter((p) => p.id !== id)
+  const updatePromotion = async (id, updatedPromotion) => {
+    loading.value = true
+    error.value = null
+    try {
+      // Convert books array to productIds
+      const payload = {
+        name: updatedPromotion.name,
+        type: updatedPromotion.type,
+        discount: updatedPromotion.discount || 0,
+        startDate: updatedPromotion.startDate,
+        endDate: updatedPromotion.endDate,
+        description: updatedPromotion.description,
+        productIds: updatedPromotion.books || [],
+      }
+      const updated = await promotionApi.updatePromotion(id, payload)
+      const index = promotions.value.findIndex((p) => p.id === id)
+      if (index !== -1) {
+        promotions.value[index] = {
+          ...updated,
+          books: updated.products ? updated.products.map(p => p.id) : [],
+        }
+      }
+      return updated
+    } catch (err) {
+      error.value = err.message
+      console.error('Failed to update promotion:', err)
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const deletePromotion = async (id) => {
+    loading.value = true
+    error.value = null
+    try {
+      await promotionApi.deletePromotion(id)
+      promotions.value = promotions.value.filter((p) => p.id !== id)
+    } catch (err) {
+      error.value = err.message
+      console.error('Failed to delete promotion:', err)
+      throw err
+    } finally {
+      loading.value = false
+    }
   }
 
   return {

@@ -34,7 +34,12 @@
           <span class="finalPrice-style">
             ${{ finalPrice.toFixed(2) }}
           </span>
-          <span class="discount-style">{{ discount }}% Off</span>
+          <span class="discount-style" v-if="product.discountType === 'percentage'">
+            {{ discount }}% Off
+          </span>
+          <span class="discount-style" v-else>
+            ${{ discount.toFixed(2) }} Off
+          </span>
         </div>
       </template>
     </div>

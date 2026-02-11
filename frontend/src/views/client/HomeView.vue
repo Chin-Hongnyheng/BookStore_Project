@@ -75,6 +75,7 @@ export default {
     const productStore = useBookStore()
     productStore.fetchGenres()
     productStore.fetchProducts()
+    productStore.fetchPromotions()
     productStore.fetchGenreCounts()
 
     const visibleCount = ref(10)

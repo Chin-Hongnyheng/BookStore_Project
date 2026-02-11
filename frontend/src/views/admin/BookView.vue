@@ -52,7 +52,7 @@
       @close="closeModal"
       @submit="submitForm"
     >
-      <form @submit.prevent="submitForm" class="space-y-4">
+      <form @submit.prevent="submitForm" class="space-y-3">
         <div class="form-group">
           <label for="title" class="label">Book Title</label>
           <input
@@ -65,7 +65,7 @@
           />
         </div>
 
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-4 gap-3">
           <div class="form-group">
             <label for="author" class="label">Author</label>
             <input
@@ -87,9 +87,7 @@
               </option>
             </select>
           </div>
-        </div>
 
-        <div class="grid grid-cols-2 gap-4">
           <div class="form-group">
             <label for="price" class="label">Price ($)</label>
             <input
@@ -116,7 +114,7 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-4 gap-3">
           <div class="form-group">
             <label for="pages" class="label">Pages</label>
             <input
@@ -140,9 +138,7 @@
               placeholder="English"
             />
           </div>
-        </div>
 
-        <div class="grid grid-cols-2 gap-4">
           <div class="form-group">
             <label for="rating" class="label">Rating</label>
             <input
@@ -163,30 +159,32 @@
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="description" class="label">Description</label>
-          <textarea
-            id="description"
-            v-model="formData.description"
-            class="input-field"
-            rows="3"
-            placeholder="Enter book description"
-          ></textarea>
-        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="form-group">
+            <label for="description" class="label">Description</label>
+            <textarea
+              id="description"
+              v-model="formData.description"
+              class="input-field"
+              rows="2"
+              placeholder="Enter book description"
+            ></textarea>
+          </div>
 
-        <div class="form-group">
-          <label class="label">Book Groups</label>
-          <div class="space-y-2">
-            <label v-for="group in bookGroups" :key="group" class="flex items-center gap-2">
-              <input
-                type="checkbox"
-                :value="group"
-                :checked="formData.groups.includes(group)"
-                @change="toggleGroup(group)"
-                class="w-4 h-4"
-              />
-              <span class="text-sm">{{ group }}</span>
-            </label>
+          <div class="form-group">
+            <label class="label">Book Groups</label>
+            <div class="space-y-1">
+              <label v-for="group in bookGroups" :key="group" class="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  :value="group"
+                  :checked="formData.groups.includes(group)"
+                  @change="toggleGroup(group)"
+                  class="w-4 h-4"
+                />
+                <span class="text-sm">{{ group }}</span>
+              </label>
+            </div>
           </div>
         </div>
 
@@ -202,7 +200,7 @@
             />
             <p class="text-xs text-gray-500">Upload an image file (JPG, PNG, etc.)</p>
             <div v-if="imagePreview" class="mt-2">
-              <img :src="imagePreview" alt="Preview" class="w-32 h-40 object-cover rounded-md border" />
+              <img :src="imagePreview" alt="Preview" class="w-24 h-32 object-cover rounded-md border" />
             </div>
           </div>
         </div>

@@ -3,7 +3,7 @@
     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
     @click.self="$emit('close')"
   >
-    <div class="bg-white rounded-lg shadow-xl max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
+    <div class="bg-white rounded-lg shadow-xl max-w-5xl w-full mx-4 max-h-[95vh] overflow-y-auto">
       <div class="flex items-center justify-between p-6 border-b border-gray-200">
         <h2 class="text-xl font-bold text-gray-900">{{ title }}</h2>
         <button @click="$emit('close')" class="text-gray-400 hover:text-gray-600 transition-colors">
