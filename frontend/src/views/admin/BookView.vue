@@ -80,9 +80,9 @@
 
           <div class="form-group">
             <label for="genre" class="label">Genre</label>
-            <select v-model="formData.genre" class="input-field">
+            <select v-model="formData.selectedGenreId" class="input-field" @change="updateGenreIds">
               <option value="">Select a genre</option>
-              <option v-for="genre in genreStore.genres || []" :key="genre.id" :value="genre.name">
+              <option v-for="genre in genreStore.genres || []" :key="genre.id" :value="genre.id">
                 {{ genre.name }}
               </option>
             </select>
@@ -191,14 +191,20 @@
         </div>
 
         <div class="form-group">
-          <label for="cover" class="label">Cover Image URL</label>
-          <input
-            id="cover"
-            v-model="formData.cover"
-            type="url"
-            class="input-field"
-            placeholder="https://example.com/image.jpg"
-          />
+          <label for="cover" class="label">Cover Image</label>
+          <div class="space-y-2">
+            <input
+              id="coverFile"
+              type="file"
+              accept="image/*"
+              @change="handleImageChange"
+              class="input-field file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+            />
+            <p class="text-xs text-gray-500">Upload an image file (JPG, PNG, etc.)</p>
+            <div v-if="imagePreview" class="mt-2">
+              <img :src="imagePreview" alt="Preview" class="w-32 h-40 object-cover rounded-md border" />
+            </div>
+          </div>
         </div>
       </form>
     </Modal>
@@ -222,11 +228,14 @@ const bookGroups = ['New', 'Featured', 'Trending', 'Hot']
 const showModal = ref(false)
 const isEditing = ref(false)
 const currentBookId = ref(null)
+const selectedImageFile = ref(null)
+const imagePreview = ref(null)
 
 const formData = reactive({
   title: '',
   author: '',
   genre: '',
+  selectedGenreId: '',
   price: 0,
   inStock: 0,
   pages: 0,
@@ -269,6 +278,9 @@ const editBook = (book) => {
   formData.title = book.title
   formData.author = book.author
   formData.genre = book.genre
+  // Set selectedGenreId from book's genres array
+  formData.selectedGenreId = book.genres && book.genres.length > 0 ? book.genres[0].id : ''
+  formData.genreIds = book.genres ? book.genres.map(g => g.id) : []
   formData.price = book.price
   formData.inStock = book.inStock
   formData.pages = book.pages
@@ -279,6 +291,8 @@ const editBook = (book) => {
   formData.groups = [...(book.groups || [])]
   formData.rating = book.rating
   formData.reviews = book.reviews
+  selectedImageFile.value = null
+  imagePreview.value = book.image ? `http://localhost:3000/uploads/products/${book.image}` : null
   showModal.value = true
 }
 
@@ -291,6 +305,7 @@ const resetForm = () => {
   formData.title = ''
   formData.author = ''
   formData.genre = ''
+  formData.selectedGenreId = ''
   formData.price = 0
   formData.inStock = 0
   formData.pages = 0
@@ -302,6 +317,16 @@ const resetForm = () => {
   formData.rating = 4.0
   formData.reviews = 0
   formData.genreIds = []
+  selectedImageFile.value = null
+  imagePreview.value = null
+}
+
+const updateGenreIds = () => {
+  if (formData.selectedGenreId) {
+    formData.genreIds = [Number(formData.selectedGenreId)]
+  } else {
+    formData.genreIds = []
+  }
 }
 
 const toggleGroup = (group) => {
@@ -310,6 +335,14 @@ const toggleGroup = (group) => {
     formData.groups.splice(index, 1)
   } else {
     formData.groups.push(group)
+  }
+}
+
+const handleImageChange = (event) => {
+  const file = event.target.files[0]
+  if (file) {
+    selectedImageFile.value = file
+    imagePreview.value = URL.createObjectURL(file)
   }
 }
 
@@ -326,6 +359,9 @@ const submitForm = async () => {
     return
   }
 
+  // Ensure genreIds is updated from selection
+  updateGenreIds()
+
   try {
     if (isEditing.value) {
       await bookStore.updateBook(currentBookId.value, {
@@ -339,7 +375,7 @@ const submitForm = async () => {
         published: formData.published,
         rating: formData.rating,
         genreIds: formData.genreIds,
-      })
+      }, selectedImageFile.value)
     } else {
       await bookStore.addBook({
         title: formData.title,
@@ -351,7 +387,7 @@ const submitForm = async () => {
         language: formData.language,
         published: formData.published,
         genreIds: formData.genreIds,
-      })
+      }, selectedImageFile.value)
     }
     closeModal()
   } catch (error) {

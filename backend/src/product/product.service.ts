@@ -19,8 +19,8 @@ export class ProductService {
 
     const product = this.productRepo.create({
       ...dto,
-      published: dto.published || null, // convert empty string to null
-      image: file?.filename || null, // store filename only, null if no file
+      published: dto.published ? new Date(dto.published) : null, // convert to Date or null
+      image: file?.filename ?? null, // store filename only, null if no file
       genres,
     });
     console.log("Data created");

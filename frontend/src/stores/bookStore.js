@@ -73,11 +73,11 @@ export const useBookStore = defineStore('book', () => {
   }
 
   // Add new product to backend
-  const addBook = async (bookData) => {
+  const addBook = async (bookData, imageFile = null) => {
     loading.value = true
     error.value = null
     try {
-      const newBook = await productApi.createProduct(bookData)
+      const newBook = await productApi.createProduct(bookData, imageFile)
       books.value.push(newBook)
       return newBook
     } catch (err) {
@@ -90,11 +90,11 @@ export const useBookStore = defineStore('book', () => {
   }
 
   // Update product in backend
-  const updateBook = async (id, bookData) => {
+  const updateBook = async (id, bookData, imageFile = null) => {
     loading.value = true
     error.value = null
     try {
-      const updated = await productApi.updateProduct(id, bookData)
+      const updated = await productApi.updateProduct(id, bookData, imageFile)
       const index = books.value.findIndex((b) => b.id === id)
       if (index !== -1) {
         books.value[index] = updated

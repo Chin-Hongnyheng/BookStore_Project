@@ -31,15 +31,30 @@ export const productApi = {
     }
   },
 
-  // Create new product
-  async createProduct(productData) {
+  // Create new product with optional image file
+  async createProduct(productData, imageFile = null) {
     try {
+      const formData = new FormData()
+      
+      // Append all product fields
+      Object.keys(productData).forEach(key => {
+        if (productData[key] !== undefined && productData[key] !== null && productData[key] !== '') {
+          if (Array.isArray(productData[key])) {
+            productData[key].forEach(item => formData.append(key, item))
+          } else {
+            formData.append(key, productData[key])
+          }
+        }
+      })
+      
+      // Append image file if provided
+      if (imageFile) {
+        formData.append('image', imageFile)
+      }
+      
       const response = await fetch(`${API_BASE_URL}/products`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(productData),
+        body: formData,
       })
       if (!response.ok) {
         throw new Error(`Failed to create product: ${response.statusText}`)
@@ -51,15 +66,30 @@ export const productApi = {
     }
   },
 
-  // Update product
-  async updateProduct(id, productData) {
+  // Update product with optional image file
+  async updateProduct(id, productData, imageFile = null) {
     try {
+      const formData = new FormData()
+      
+      // Append all product fields
+      Object.keys(productData).forEach(key => {
+        if (productData[key] !== undefined && productData[key] !== null && productData[key] !== '') {
+          if (Array.isArray(productData[key])) {
+            productData[key].forEach(item => formData.append(key, item))
+          } else {
+            formData.append(key, productData[key])
+          }
+        }
+      })
+      
+      // Append image file if provided
+      if (imageFile) {
+        formData.append('image', imageFile)
+      }
+      
       const response = await fetch(`${API_BASE_URL}/products/${id}`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(productData),
+        body: formData,
       })
       if (!response.ok) {
         throw new Error(`Failed to update product: ${response.statusText}`)

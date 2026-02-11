@@ -31,15 +31,26 @@ export const genreApi = {
     }
   },
 
-  // Create new genre
-  async createGenre(genreData) {
+  // Create new genre with optional image file
+  async createGenre(genreData, imageFile = null) {
     try {
+      const formData = new FormData()
+
+      // Append all genre fields
+      Object.keys(genreData).forEach((key) => {
+        if (genreData[key] !== undefined && genreData[key] !== null && genreData[key] !== '') {
+          formData.append(key, genreData[key])
+        }
+      })
+
+      // Append image file if provided
+      if (imageFile) {
+        formData.append('image', imageFile)
+      }
+
       const response = await fetch(`${API_BASE_URL}/genres`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(genreData),
+        body: formData,
       })
       if (!response.ok) {
         throw new Error(`Failed to create genre: ${response.statusText}`)
@@ -51,15 +62,26 @@ export const genreApi = {
     }
   },
 
-  // Update genre
-  async updateGenre(id, genreData) {
+  // Update genre with optional image file
+  async updateGenre(id, genreData, imageFile = null) {
     try {
+      const formData = new FormData()
+
+      // Append all genre fields
+      Object.keys(genreData).forEach((key) => {
+        if (genreData[key] !== undefined && genreData[key] !== null && genreData[key] !== '') {
+          formData.append(key, genreData[key])
+        }
+      })
+
+      // Append image file if provided
+      if (imageFile) {
+        formData.append('image', imageFile)
+      }
+
       const response = await fetch(`${API_BASE_URL}/genres/${id}`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(genreData),
+        body: formData,
       })
       if (!response.ok) {
         throw new Error(`Failed to update genre: ${response.statusText}`)

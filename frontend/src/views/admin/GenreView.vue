@@ -65,6 +65,38 @@
             placeholder="Enter genre description"
           ></textarea>
         </div>
+
+        <div class="form-group">
+          <label for="genreImage" class="label">Genre Image</label>
+          <div class="space-y-2">
+            <input
+              id="genreImage"
+              type="file"
+              accept="image/*"
+              @change="handleImageChange"
+              class="input-field file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+            />
+            <p class="text-xs text-gray-500">Upload an image file (JPG, PNG, etc.) - Optional</p>
+            <div v-if="imagePreview" class="mt-2">
+              <img :src="imagePreview" alt="Preview" class="w-24 h-24 object-cover rounded-md border" />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="svgIcon" class="label">SVG Icon Code</label>
+          <textarea
+            id="svgIcon"
+            v-model="formData.svgIcon"
+            class="input-field font-mono text-sm"
+            rows="4"
+            placeholder="<svg>...</svg>"
+          ></textarea>
+          <p class="text-xs text-gray-500 mt-1">Paste SVG code directly - Optional</p>
+          <div v-if="formData.svgIcon" class="mt-2 p-2 bg-gray-100 rounded-md inline-block">
+            <div v-html="formData.svgIcon" class="w-8 h-8"></div>
+          </div>
+        </div>
       </form>
     </Modal>
   </div>
@@ -83,10 +115,13 @@ const genreStore = useGenreStore()
 const showModal = ref(false)
 const isEditing = ref(false)
 const currentGenreId = ref(null)
+const selectedImageFile = ref(null)
+const imagePreview = ref(null)
 
 const formData = reactive({
   name: '',
   description: '',
+  svgIcon: '',
 })
 
 // Fetch genres when component mounts
@@ -109,6 +144,9 @@ const openAddModal = () => {
   currentGenreId.value = null
   formData.name = ''
   formData.description = ''
+  formData.svgIcon = ''
+  selectedImageFile.value = null
+  imagePreview.value = null
   showModal.value = true
 }
 
@@ -116,7 +154,10 @@ const editGenre = (genre) => {
   isEditing.value = true
   currentGenreId.value = genre.id
   formData.name = genre.name
-  formData.description = genre.description
+  formData.description = genre.description || ''
+  formData.svgIcon = genre.svgIcon || ''
+  selectedImageFile.value = null
+  imagePreview.value = genre.image ? `http://localhost:3000/uploads/genres/${genre.image}` : null
   showModal.value = true
 }
 
@@ -124,6 +165,17 @@ const closeModal = () => {
   showModal.value = false
   formData.name = ''
   formData.description = ''
+  formData.svgIcon = ''
+  selectedImageFile.value = null
+  imagePreview.value = null
+}
+
+const handleImageChange = (event) => {
+  const file = event.target.files[0]
+  if (file) {
+    selectedImageFile.value = file
+    imagePreview.value = URL.createObjectURL(file)
+  }
 }
 
 const submitForm = async () => {
@@ -137,12 +189,14 @@ const submitForm = async () => {
       await genreStore.updateGenre(currentGenreId.value, {
         name: formData.name,
         description: formData.description,
-      })
+        svgIcon: formData.svgIcon,
+      }, selectedImageFile.value)
     } else {
       await genreStore.addGenre({
         name: formData.name,
         description: formData.description,
-      })
+        svgIcon: formData.svgIcon,
+      }, selectedImageFile.value)
     }
     closeModal()
   } catch (error) {

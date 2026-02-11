@@ -15,8 +15,8 @@ export class Product {
   @Column({ type: 'text' })
   description: string;
 
-  @Column({ nullable: true })
-  image: string;
+  @Column({ type: 'varchar', nullable: true })
+  image: string | null;
 
   @Column('decimal', { precision: 10, scale: 2 })
   price: number;

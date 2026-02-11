@@ -13,8 +13,8 @@ export class Genre {
   @Column({ nullable: true })
   description: string;
 
-  @Column({ nullable: true })
-  image: string;
+  @Column({ type: 'varchar', nullable: true })
+  image: string | null;
 
   @Column({ type: 'text', nullable: true })
   svgIcon: string;

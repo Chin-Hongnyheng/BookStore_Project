@@ -22,11 +22,11 @@ export const useGenreStore = defineStore('genre', () => {
   }
 
   // Add new genre to backend
-  const addGenre = async (genreData) => {
+  const addGenre = async (genreData, imageFile = null) => {
     loading.value = true
     error.value = null
     try {
-      const newGenre = await genreApi.createGenre(genreData)
+      const newGenre = await genreApi.createGenre(genreData, imageFile)
       genres.value.push(newGenre)
       return newGenre
     } catch (err) {
@@ -39,11 +39,11 @@ export const useGenreStore = defineStore('genre', () => {
   }
 
   // Update genre in backend
-  const updateGenre = async (id, updatedGenre) => {
+  const updateGenre = async (id, updatedGenre, imageFile = null) => {
     loading.value = true
     error.value = null
     try {
-      const updated = await genreApi.updateGenre(id, updatedGenre)
+      const updated = await genreApi.updateGenre(id, updatedGenre, imageFile)
       const index = genres.value.findIndex((g) => g.id === id)
       if (index !== -1) {
         genres.value[index] = updated
