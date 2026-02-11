@@ -30,24 +30,24 @@
       </div>
   </div>
 
-  <!-- Book -->
-  <div class="book-wrapper">
-    <span class="main-text-style">New Arrivals</span>
-    <div class="book-style">
-    <BookComponent
-    v-for="product in visibleProducts"
-    :key="product.id"
-    :product="product"
-    :title="product.title"
-    :author="product.author"
-    :price="product.price"
-    :discount="product.discount"
-    :finalPrice="product.finalPrice"
-    :image="'http://localhost:3000/uploads/products/' + product.image"
-    :rating="product.rating"
-    />
-  </div>
-  </div>
+    <!-- Book -->
+    <div class="book-wrapper">
+      <span class="main-text-style">New Arrivals</span>
+      <div class="book-style">
+        <BookComponent
+        v-for="product in visibleProducts"
+        :key="product.id"
+        :product="product"
+        :title="product.title"
+        :author="product.author"
+        :price="product.price"
+        :discount="product.discount"
+        :finalPrice="product.finalPrice"
+        :image="'http://localhost:3000/uploads/products/' + product.image"
+        :rating="product.rating"
+        />
+      </div>
+    </div>
 
   <div
     class="see-more-wrapper"
@@ -212,8 +212,6 @@ export default {
   background-color: #3255FB;
   color: white;
   border-color: #3255FB;
-
-
 }
   .book-style{
     display:flex;

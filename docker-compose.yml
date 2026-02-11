@@ -30,6 +30,21 @@ services:
       - ./frontend:/app       
       - /app/node_modules
     command: npm run dev
+
+  auth-service:
+    build: ./auth-service
+    container_name: vue-auth-service
+    command: npm run start:dev
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./auth-service:/app
+      - /app/node_modules
+    depends_on:
+      - postgres
+    env_file:
+      - ./auth-service/.env
+    
   postgres:
     image: postgres:16
     container_name: postgres-db

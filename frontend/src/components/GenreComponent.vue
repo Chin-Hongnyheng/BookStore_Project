@@ -47,7 +47,7 @@
     color:#3255FB;
     cursor: pointer;
     
-    transform: scale(1.1);
+    transform: scale(1.01);
 }
 .item-style{
     display:flex;

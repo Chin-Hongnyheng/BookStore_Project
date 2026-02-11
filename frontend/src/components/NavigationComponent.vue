@@ -1,30 +1,62 @@
 <template>
   <nav>
     <ul class="nav-list">
-      <li>
-        <router-link to="/Home" class="nav-link" exact>Home</router-link>
-      </li>
-      <li>
-        <router-link to="/Explore" class="nav-link">Explore</router-link>
-      </li>
-      <li>
-        <router-link to="/New-Arrivals" class="nav-link">New Arrivals</router-link>
-      </li>
-      <li>
-        <router-link to="/Best-Selling-Books" class="nav-link">Best Selling Books</router-link>
-      </li>
-      <li>
-        <router-link to="/Contact-Us" class="nav-link">Contact Us</router-link>
+      <li v-for="item in filterNavItems" :key="item.path">
+        <router-link
+        :to="item.path"
+        class="nav-link"
+        active-class="router-link-exact-active"
+        >
+      {{ item.title }}</router-link>
       </li>
     </ul>
   </nav>
 </template>
 
 
-<script>
-    export default{
-        name: 'NavigationComponent',
-    }
+<script setup lang="ts">
+import { computed } from 'vue'
+
+const navItems = [
+  {
+    path: '/Home',
+    title: 'Home',
+    roles: ['User'],
+  },
+  {
+    path: '/Explore',
+    title: 'Explore',
+    roles: ['User'],
+  },
+  {
+    path: '/New-Arrivals',
+    title: 'New Arrivals',
+    roles: ['User'],
+  },
+  {
+    path: '/Best-Selling-Books',
+    title: 'Best Selling Books',
+    roles: ['User'],
+  },
+  {
+    path: '/Contact-Us',
+    title: 'Contact Us',
+    roles: ['User'],
+  },
+]
+//Get roles from sessionStorage
+const rawRoles: string[] = JSON.parse(
+  sessionStorage.getItem('roles') || '[]'
+)
+// Store userRole in array
+const userRoles = rawRoles.map(r => r.toLowerCase())
+
+//Filer Item and detect role
+const filterNavItems = computed(() =>
+  navItems.filter((item) => 
+  item.roles.some((role) => userRoles.includes(role.toLowerCase()))
+)
+);
 </script>
 <style scoped>
 
