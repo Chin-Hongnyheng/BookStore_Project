@@ -3,6 +3,14 @@
     <!-- Book Image -->
     <div class="image-style">
       <img :src="image" alt="Book Image" />
+      <!-- Hot Badge -->
+      <span v-if="product.hasHotBadge" class="hot-badge">
+        {{ product.hotBadgeText || '🔥 HOT' }}
+      </span>
+      <!-- Buy 1 Get 1 Badge -->
+      <span v-if="product.hasBuy1Get1" class="bogo-badge">
+        Buy 1 Get 1
+      </span>
     </div>
 
     <!-- Rating Box -->
@@ -87,6 +95,7 @@ export default {
   border-radius: 20px;
   overflow: hidden;
   transition: transform 0.3s ease;
+  position: relative;
 }
 
 .image-style:hover {
@@ -99,6 +108,36 @@ export default {
   object-fit: cover;
   border-radius: 20px;
   object-position: center;
+}
+
+/* Hot Badge */
+.hot-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: linear-gradient(135deg, #ff6b35, #f72626);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.4);
+  z-index: 10;
+}
+
+/* Buy 1 Get 1 Badge */
+.bogo-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+  z-index: 10;
 }
 
 /* Rating Box */

@@ -27,8 +27,9 @@
       @delete="deletePromotion"
     >
       <template #cell-discount="{ item }">
-        <template v-if="item.type === 'Hot Badge'">—</template>
-        <template v-else>{{ item.discount }}%</template>
+        <template v-if="item.type === 'Hot Badge' || item.type === 'Buy 1 Get 1'">—</template>
+        <template v-else-if="item.type === '% Off'">{{ Number(item.discount).toFixed(0) }}%</template>
+        <template v-else>${{ Number(item.discount).toFixed(2) }}</template>
       </template>
       <template #cell-status="{ item }">
         <span
@@ -70,13 +71,14 @@
           <label for="type" class="label">Promotion Type</label>
           <select v-model="formData.type" class="input-field" required>
             <option value="">Select promotion type</option>
-            <option value="Sale">Sale (Fixed Amount)</option>
+            <option value="Sale">Sale (Fixed Amount Off)</option>
             <option value="% Off">Percentage Off</option>
-            <option value="Hot Badge">Hot Badge</option>
+            <option value="Hot Badge">Hot Badge (No Discount)</option>
+            <option value="Buy 1 Get 1">Buy 1 Get 1 Free</option>
           </select>
         </div>
 
-        <div v-if="formData.type !== 'Hot Badge'" class="form-group">
+        <div v-if="requiresDiscountInput" class="form-group">
           <label for="discount" class="label">
             Discount {{ formData.type === '% Off' ? '(%)' : '($)' }}
           </label>
@@ -89,6 +91,19 @@
             required
             placeholder="Enter discount amount"
           />
+        </div>
+
+        <div v-if="formData.type === 'Hot Badge'" class="form-group">
+          <label for="badgeText" class="label">Badge Text</label>
+          <input
+            id="badgeText"
+            v-model="formData.badgeText"
+            type="text"
+            class="input-field"
+            maxlength="20"
+            placeholder="e.g., 🔥 HOT, NEW!, TRENDING"
+          />
+          <p class="text-xs text-gray-500 mt-1">Leave empty for default: 🔥 HOT</p>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
@@ -220,8 +235,9 @@ const booksWithActivePromotions = computed(() => {
     const promoEnd = new Date(promo.endDate)
     const isActive = now >= promoStart && now <= promoEnd
     
-    // Only check "Sale" and "% Off" promotions (not Hot Badge)
-    if (isActive && (promo.type === 'Sale' || promo.type === '% Off')) {
+    // Include Sale, % Off, and Buy 1 Get 1 promotions (not Hot Badge - it's just a label)
+    const discountTypes = ['Sale', '% Off', 'Buy 1 Get 1']
+    if (isActive && discountTypes.includes(promo.type)) {
       // Check products array from API or books array from store
       const productIds = promo.products?.map((p) => p.id) || promo.books || []
       productIds.forEach((id) => {
@@ -269,6 +285,11 @@ const getBookPromotion = (bookId) => {
   return booksWithActivePromotions.value.get(bookId)
 }
 
+// Check if the current type requires a discount input
+const requiresDiscountInput = computed(() => {
+  return formData.type === 'Sale' || formData.type === '% Off'
+})
+
 const formData = reactive({
   name: '',
   type: '',
@@ -277,6 +298,7 @@ const formData = reactive({
   endDate: '',
   books: [],
   description: '',
+  badgeText: '',
 })
 
 // Fetch promotions when component mounts
@@ -316,6 +338,7 @@ const editPromotion = (promotion) => {
   formData.endDate = promotion.endDate
   formData.books = [...promotion.books]
   formData.description = promotion.description
+  formData.badgeText = promotion.badgeText || ''
   resetBookFilter()
   showModal.value = true
 }
@@ -333,6 +356,7 @@ const resetForm = () => {
   formData.endDate = ''
   formData.books = []
   formData.description = ''
+  formData.badgeText = ''
 }
 
 const resetBookFilter = () => {
@@ -355,7 +379,8 @@ const submitForm = () => {
     return
   }
 
-  if (formData.type !== 'Hot Badge' && formData.discount === 0) {
+  // Only require discount for Sale and % Off types
+  if (requiresDiscountInput.value && formData.discount === 0) {
     alert('Please enter a discount amount')
     return
   }
@@ -366,6 +391,7 @@ const submitForm = () => {
   }
 
   if (isEditing.value) {
+    console.log('Submitting badgeText:', formData.badgeText)
     promotionStore.updatePromotion(currentPromotionId.value, {
       name: formData.name,
       type: formData.type,
@@ -374,6 +400,7 @@ const submitForm = () => {
       endDate: formData.endDate,
       books: formData.books,
       description: formData.description,
+      badgeText: formData.badgeText || null,
     })
   } else {
     promotionStore.addPromotion({
@@ -384,6 +411,7 @@ const submitForm = () => {
       endDate: formData.endDate,
       books: formData.books,
       description: formData.description,
+      badgeText: formData.badgeText || null,
     })
   }
 

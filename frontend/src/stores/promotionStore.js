@@ -14,9 +14,9 @@ export const usePromotionStore = defineStore('promotion', () => {
     try {
       const data = await promotionApi.getAllPromotions()
       // Transform data to include books array (product IDs)
-      promotions.value = data.map(promo => ({
+      promotions.value = data.map((promo) => ({
         ...promo,
-        books: promo.products ? promo.products.map(p => p.id) : [],
+        books: promo.products ? promo.products.map((p) => p.id) : [],
       }))
       console.log('Promotions loaded:', promotions.value.length, 'items')
     } catch (err) {
@@ -39,12 +39,13 @@ export const usePromotionStore = defineStore('promotion', () => {
         startDate: promotionData.startDate,
         endDate: promotionData.endDate,
         description: promotionData.description,
+        badgeText: promotionData.badgeText || null,
         productIds: promotionData.books || [],
       }
       const newPromotion = await promotionApi.createPromotion(payload)
       promotions.value.push({
         ...newPromotion,
-        books: newPromotion.products ? newPromotion.products.map(p => p.id) : [],
+        books: newPromotion.products ? newPromotion.products.map((p) => p.id) : [],
       })
       return newPromotion
     } catch (err) {
@@ -68,14 +69,16 @@ export const usePromotionStore = defineStore('promotion', () => {
         startDate: updatedPromotion.startDate,
         endDate: updatedPromotion.endDate,
         description: updatedPromotion.description,
+        badgeText: updatedPromotion.badgeText || null,
         productIds: updatedPromotion.books || [],
       }
+      console.log('Updating promotion with payload:', payload)
       const updated = await promotionApi.updatePromotion(id, payload)
       const index = promotions.value.findIndex((p) => p.id === id)
       if (index !== -1) {
         promotions.value[index] = {
           ...updated,
-          books: updated.products ? updated.products.map(p => p.id) : [],
+          books: updated.products ? updated.products.map((p) => p.id) : [],
         }
       }
       return updated

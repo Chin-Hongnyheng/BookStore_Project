@@ -34,6 +34,9 @@ export class Promotion {
   @Column({ type: 'text', nullable: true })
   description: string | null;
 
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  badgeText: string | null;
+
   @ManyToMany(() => Product, { cascade: true })
   @JoinTable({
     name: 'promotion_products',

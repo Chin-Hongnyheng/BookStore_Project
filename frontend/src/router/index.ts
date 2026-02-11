@@ -83,6 +83,11 @@ const router = createRouter({
           component: () => import('@/views/admin/PromotionView.vue'),
         },
         {
+          path: 'coupons',
+          name: 'Coupons',
+          component: () => import('@/views/admin/CouponView.vue'),
+        },
+        {
           path: 'subscriptions',
           name: 'Subscriptions',
           component: () => import('@/views/admin/SubscriptionView.vue'),

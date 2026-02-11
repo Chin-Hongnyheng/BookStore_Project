@@ -22,6 +22,10 @@ export class CreatePromotionDto {
   description?: string;
 
   @IsOptional()
+  @IsString()
+  badgeText?: string;
+
+  @IsOptional()
   @IsArray()
   @IsNumber({}, { each: true })
   productIds?: number[];

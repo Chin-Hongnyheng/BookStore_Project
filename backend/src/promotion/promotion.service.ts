@@ -41,6 +41,7 @@ export class PromotionService {
       startDate: promotionData.startDate ? new Date(promotionData.startDate) : new Date(),
       endDate: promotionData.endDate ? new Date(promotionData.endDate) : new Date(),
       description: promotionData.description ?? null,
+      badgeText: promotionData.badgeText ?? null,
       status: this.calculateStatus(new Date(dto.startDate), new Date(dto.endDate)),
       products,
     });
@@ -87,6 +88,7 @@ export class PromotionService {
     if (updateData.type !== undefined) promotion.type = updateData.type;
     if (updateData.discount !== undefined) promotion.discount = updateData.discount;
     if (updateData.description !== undefined) promotion.description = updateData.description;
+    if (updateData.badgeText !== undefined) promotion.badgeText = updateData.badgeText;
 
     if (updateData.startDate) {
       promotion.startDate = new Date(updateData.startDate);

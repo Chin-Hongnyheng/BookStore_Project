@@ -77,6 +77,19 @@
           </router-link>
 
           <router-link
+            to="/admin/coupons"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors"
+            :class="
+              $route.path === '/admin/coupons'
+                ? 'bg-blue-50 text-blue-600'
+                : 'text-gray-700 hover:bg-gray-50'
+            "
+          >
+            <font-awesome-icon icon="ticket-alt" />
+            Coupons
+          </router-link>
+
+          <router-link
             to="/admin/subscriptions"
             class="flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors"
             :class="

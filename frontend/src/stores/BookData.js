@@ -76,6 +76,28 @@ export const useBookStore = defineStore('book', {
           }
         }
 
+        // Check for Hot Badge promotion and get custom badge text
+        const hotBadgePromo = state.promotions.find((promo) => {
+          const promoStart = new Date(promo.startDate);
+          const promoEnd = new Date(promo.endDate);
+          const isActive = now >= promoStart && now <= promoEnd;
+          const hasProduct = promo.products?.some((prod) => prod.id === p.id) || 
+                             promo.books?.includes(p.id);
+          return isActive && hasProduct && promo.type === 'Hot Badge';
+        });
+        const hasHotBadge = !!hotBadgePromo;
+        const hotBadgeText = hotBadgePromo?.badgeText || '🔥 HOT';
+
+        // Check for Buy 1 Get 1 promotion
+        const hasBuy1Get1 = state.promotions.some((promo) => {
+          const promoStart = new Date(promo.startDate);
+          const promoEnd = new Date(promo.endDate);
+          const isActive = now >= promoStart && now <= promoEnd;
+          const hasProduct = promo.products?.some((prod) => prod.id === p.id) || 
+                             promo.books?.includes(p.id);
+          return isActive && hasProduct && promo.type === 'Buy 1 Get 1';
+        });
+
         return {
           ...p,
           // convert strings to numbers for Vue props
@@ -87,6 +109,9 @@ export const useBookStore = defineStore('book', {
           pages: Number(p.pages),
           finalPrice: finalPrice,
           genreIds: p.genres?.map((g) => g.id) || [],
+          hasHotBadge: hasHotBadge, // Hot badge flag
+          hotBadgeText: hotBadgeText, // Custom hot badge text
+          hasBuy1Get1: hasBuy1Get1, // Buy 1 Get 1 flag
         };
       });
     },

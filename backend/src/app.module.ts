@@ -6,6 +6,7 @@ import { GenreModule } from './genre/genre.module';
 import { ProductModule } from './product/product.module';
 import { ProductGenreModule } from './product-genre/product-genre.module';
 import { PromotionModule } from './promotion/promotion.module';
+import { CouponModule } from './coupon/coupon.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 
@@ -30,6 +31,7 @@ import { join } from 'path';
     ProductModule,
     ProductGenreModule,
     PromotionModule,
+    CouponModule,
   ],
   controllers: [AppController],
   providers: [AppService],
