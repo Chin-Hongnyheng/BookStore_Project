@@ -5,17 +5,38 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: 'Dashboard',
+      redirect: '/admin/dashboard',
     },
     {
-      path: '/Dashboard',
-      name: 'Dashboard',
-      component: () => import('@/views/DashboardView.vue'),
-    },
-    {
-      path: '/Book',
-      name: 'Book',
-      component: () => import('@/views/BookView.vue'),
+      path: '/admin',
+      component: () => import('@/layouts/AdminLayout.vue'),
+      children: [
+        {
+          path: 'dashboard',
+          name: 'Dashboard',
+          component: () => import('@/views/admin/DashboardView.vue'),
+        },
+        {
+          path: 'genres',
+          name: 'Genres',
+          component: () => import('@/views/admin/GenreView.vue'),
+        },
+        {
+          path: 'books',
+          name: 'Books',
+          component: () => import('@/views/admin/BookView.vue'),
+        },
+        {
+          path: 'promotions',
+          name: 'Promotions',
+          component: () => import('@/views/admin/PromotionView.vue'),
+        },
+        {
+          path: 'subscriptions',
+          name: 'Subscriptions',
+          component: () => import('@/views/admin/SubscriptionView.vue'),
+        },
+      ],
     },
   ],
 })
