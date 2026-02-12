@@ -8,7 +8,6 @@ export class Genre{
 
     @Column({unique: true})
     name: string;
-    // could be comedy, action
 
     @Column({nullable: true})
     image: string;

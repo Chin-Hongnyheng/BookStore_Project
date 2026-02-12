@@ -11,7 +11,7 @@ import { NewArrivalModule } from './newarrival/newarrival.module';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module';
 import { RecommendationModule } from './recommendation/recommendation.module';
-import { OrderModule } from './order/order.module';
+import { WishlistModule } from './wishlist/wishlist.module';
 
 @Module({
   imports: [
@@ -28,7 +28,7 @@ import { OrderModule } from './order/order.module';
     NewArrivalModule,
     DatabaseModule,
     RecommendationModule,
-    OrderModule,
+    WishlistModule,
   ],
   controllers: [AppController],
   providers: [AppService],

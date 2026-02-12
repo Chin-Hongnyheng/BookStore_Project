@@ -3,9 +3,26 @@
     <!-- Book Image -->
     <div class="image-style">
       <img :src="image" alt="Book Image" />
+
+      <!-- HEART -->
+      <div
+        class="heart-icon"
+        :class="{ active: isWishlisted }"
+        @click.stop="toggleWishlist"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path
+            d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0
+               A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5
+               l-5.492 5.313a2 2 0 0 1-3 .019L5 15
+               c-1.5-1.5-3-3.2-3-5.5"/>
+        </svg>
+      </div>
     </div>
 
-    <!-- Rating Box -->
+    <!-- Rating -->
     <div class="rating-box">
       <span class="star">★</span>
       <span class="rating">{{ rating }}</span>
@@ -17,23 +34,16 @@
       <span class="title-style">{{ title }}</span>
     </div>
 
-    <!-- Price Section -->
+    <!-- Price -->
     <div class="price-section">
-      <!-- NO DISCOUNT -->
-      <span
-        v-if="discount === 0"
-        class="finalPrice-style"
-      >
+      <span v-if="discount === 0" class="finalPrice-style">
         ${{ price.toFixed(2) }}
       </span>
 
-      <!-- WITH DISCOUNT -->
       <template v-else>
         <span class="price-style">${{ price.toFixed(2) }}</span>
         <div class="finalPrice-discount">
-          <span class="finalPrice-style">
-            ${{ finalPrice.toFixed(2) }}
-          </span>
+          <span class="finalPrice-style">${{ finalPrice.toFixed(2) }}</span>
           <span class="discount-style">{{ discount }}% Off</span>
         </div>
       </template>
@@ -43,13 +53,14 @@
       Add To Cart
       <font-awesome-icon icon="shopping-cart"/>
     </button>
-
   </div>
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: 'BookComponent',
+
   props: {
     product: { type: Object, required: true },
     title: { type: String, required: true },
@@ -60,18 +71,92 @@ export default {
     image: { type: String, required: true },
     rating: { type: Number, required: true },
   },
-  methods:{
+
+  data() {
+    return {
+      userId: null,
+      isWishlisted: false,
+    }
+  },
+
+  mounted() {
+    this.getUserId()
+    this.checkWishlist()
+  },
+
+  methods: {
     handleClick() {
       this.$emit('book-clicked', this.product)
     },
-  }
-};
+    parseJwt(token) {
+      try {
+        const base64Url = token.split('.')[1]
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+        return JSON.parse(atob(base64))
+      } catch {
+        return null
+      }
+    },
+
+    getUserId() {
+      const token = sessionStorage.getItem('token')
+      if (!token) return
+
+      const payload = this.parseJwt(token)
+      if (payload) {
+        this.userId = payload.sub
+      }
+    },
+    async checkWishlist() {
+      if (!this.userId) return
+
+      try {
+        const res = await axios.get(
+          `http://localhost:3000/wishlists/${this.userId}`
+        )
+
+        const productIds = res.data.map(item => item.product.id)
+        this.isWishlisted = productIds.includes(this.product.id)
+      } catch (err) {
+        console.error('Wishlist fetch error', err)
+      }
+    },
+
+    async toggleWishlist() {
+      if (!this.userId) {
+        alert('Please login first')
+        return
+      }
+
+      this.isWishlisted = !this.isWishlisted
+
+      try {
+        if (this.isWishlisted) {
+          await axios.post('http://localhost:3000/wishlists', {
+            userId: this.userId,
+            productIds: [this.product.id],
+          })
+        } else {
+          await axios.delete(
+            `http://localhost:3000/wishlists/${this.userId}/${this.product.id}`
+          )
+        }
+      } catch (err) {
+        console.error('Wishlist error', err)
+        this.isWishlisted = !this.isWishlisted
+      }
+    },
+  },
+}
 </script>
 
-<style scoped>
-/* Import Nunito font */
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap');
 
+
+<style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap');
+.heart-icon.active svg {
+  stroke: red;
+}
 .book {
   width: 267px;
   /* height: 654px; */
@@ -86,6 +171,7 @@ export default {
   aspect-ratio: 2 / 3;
   border-radius: 20px;
   overflow: hidden;
+  position: relative;
   transition: transform 0.3s ease;
 }
 
@@ -100,8 +186,33 @@ export default {
   border-radius: 20px;
   object-position: center;
 }
+.heart-icon {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  background-color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  z-index: 10;
+}
 
-/* Rating Box */
+.heart-icon:hover {
+  transform: scale(1.1);
+  background-color: #f2f2f2;
+}
+
+.heart-icon svg {
+  width: 24px;
+  height: 24px;
+  stroke: #3255FB; 
+}
+
 .rating-box {
   width: 90px;
   height: 42px;

@@ -3,7 +3,7 @@
     <div class="showcase-text-container">
         <span class="showcase-title">Find Refuge in the World of Literature in our Store</span>
         <span class="showcase-text" style="width: 452px">Browse through our diverse range of meticulous curated stories and genres, designed to spark your individuality and cater to your literacy sense of style</span>
-        <button class="shop-now-btn">Shop Now</button>
+        <button class="shop-now-btn" @click="shopNow">Shop Now</button>
         <div class="description">
             <div class="description-style">
                 <span class="showcase-number">200+</span>
@@ -27,14 +27,23 @@
 </div>
 </template>
 <script>
-    import girl from '@/assets/girl.png'
+import girl from '@/assets/girl.png'
+import { useRouter } from 'vue-router'
     export default{
         name: 'ShowcaseComponent',
         data(){
             return{
                 girl,
             }
+        },
+        setup() {
+        const router = useRouter()
+
+        function shopNow() {
+            router.push('/All Books/0')
         }
+        return { shopNow }
+  }
     }
 </script>
 <style scoped>
