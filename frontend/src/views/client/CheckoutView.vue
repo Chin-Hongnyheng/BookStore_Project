@@ -42,29 +42,72 @@
               ></textarea>
             </div>
             <div class="form-group full-width">
-              <label>Telegram Notification</label>
+              <label>Telegram Notification <span class="optional-tag">(optional)</span></label>
               <div class="telegram-connect">
-                <div v-if="telegramConnected" class="telegram-status connected">
-                  <span class="tg-icon">✅</span>
-                  <span
-                    >Telegram connected! You will receive order confirmation notifications.</span
+                <!-- Option 1: Auto deep-link -->
+                <div class="tg-option">
+                  <div class="tg-option-header">
+                    <span class="tg-option-num">1</span>
+                    <span class="tg-option-title">Auto Connect</span>
+                  </div>
+                  <div
+                    v-if="telegramConnected && !manualOverride"
+                    class="telegram-status connected"
                   >
+                    <span class="tg-icon">✅</span>
+                    <span>Telegram connected! Notifications will be sent to your account.</span>
+                    <button class="tg-change-btn" @click="manualOverride = true">
+                      Use different ID
+                    </button>
+                  </div>
+                  <template v-else-if="!manualOverride">
+                    <a
+                      :href="telegramDeepLink"
+                      target="_blank"
+                      class="telegram-btn"
+                      @click="onTelegramClick"
+                    >
+                      <span class="tg-icon">✈️</span>
+                      Get Telegram Notification
+                    </a>
+                    <p v-if="telegramChecking" class="field-hint">Checking connection...</p>
+                    <p v-else class="field-hint">
+                      Click to connect your Telegram and receive order updates
+                    </p>
+                  </template>
+                  <div v-else class="telegram-status overridden">
+                    <span class="tg-icon">ℹ️</span>
+                    <span>Using manual Chat ID below instead.</span>
+                    <button
+                      class="tg-change-btn"
+                      @click="
+                        manualOverride = false
+                        manualChatId = ''
+                      "
+                    >
+                      Use auto connect
+                    </button>
+                  </div>
                 </div>
-                <template v-else>
-                  <a
-                    :href="telegramDeepLink"
-                    target="_blank"
-                    class="telegram-btn"
-                    @click="onTelegramClick"
-                  >
-                    <span class="tg-icon">✈️</span>
-                    Get Telegram Notification
-                  </a>
-                  <p v-if="telegramChecking" class="field-hint">Checking connection...</p>
-                  <p v-else class="field-hint">
-                    Click to connect your Telegram and receive order updates
+
+                <div class="tg-divider"><span>OR</span></div>
+
+                <!-- Option 2: Manual Chat ID -->
+                <div class="tg-option">
+                  <div class="tg-option-header">
+                    <span class="tg-option-num">2</span>
+                    <span class="tg-option-title">Enter Chat ID Manually</span>
+                  </div>
+                  <input
+                    v-model="manualChatId"
+                    type="text"
+                    placeholder="e.g. 123456789"
+                    @input="onManualInput"
+                  />
+                  <p class="field-hint">
+                    Send /start to <strong>@userinfobot</strong> on Telegram to get your Chat ID
                   </p>
-                </template>
+                </div>
               </div>
             </div>
           </div>
@@ -204,6 +247,8 @@ const userId = sessionStorage.getItem('userId')
 const telegramDeepLink = `https://t.me/Boundora_Bot?start=${userId}`
 const telegramConnected = ref(false)
 const telegramChecking = ref(false)
+const manualOverride = ref(false)
+const manualChatId = ref('')
 let telegramPollTimer = null
 
 const checkTelegramStatus = async () => {
@@ -223,9 +268,17 @@ const checkTelegramStatus = async () => {
 
 const onTelegramClick = () => {
   telegramChecking.value = true
+  manualOverride.value = false
+  manualChatId.value = ''
   // Start polling after user clicks the deep-link button
   if (!telegramPollTimer) {
     telegramPollTimer = setInterval(checkTelegramStatus, 3000)
+  }
+}
+
+const onManualInput = () => {
+  if (manualChatId.value.trim()) {
+    manualOverride.value = true
   }
 }
 
@@ -299,7 +352,9 @@ const placeOrder = async () => {
       discountAmount: cartStore.discountAmount || 0,
       paymentMethod: 'BANK_QR',
       bankName: form.bankName,
-      userId: userId || null,
+      telegramChatId:
+        manualOverride.value && manualChatId.value.trim() ? manualChatId.value.trim() : null,
+      userId: !manualOverride.value ? userId || null : null,
     }
 
     const result = await orderApi.createOrder(orderData, paymentFile.value)
@@ -777,9 +832,84 @@ const placeOrder = async () => {
   background: #f0fdf4;
   color: #059669;
   border: 1px solid #bbf7d0;
+  flex-wrap: wrap;
+}
+
+.telegram-status.overridden {
+  background: #f0f4ff;
+  color: #3255fb;
+  border: 1px solid #c7d2fe;
+  flex-wrap: wrap;
 }
 
 .tg-icon {
   font-size: 18px;
+}
+
+.tg-option {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tg-option-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tg-option-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #3255fb;
+  color: white;
+  font-size: 12px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tg-option-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #374151;
+}
+
+.tg-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0;
+  color: #9ca3af;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.tg-divider::before,
+.tg-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #e5e7eb;
+}
+
+.tg-change-btn {
+  background: none;
+  border: none;
+  color: #3255fb;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  margin-left: auto;
+  font-family: 'Nunito', sans-serif;
+}
+
+.tg-change-btn:hover {
+  color: #1a3a8f;
 }
 </style>
