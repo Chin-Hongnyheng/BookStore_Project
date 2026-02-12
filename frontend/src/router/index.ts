@@ -48,10 +48,10 @@ const router = createRouter({
           component: () => import('@/views/client/BestSellingBooksView.vue'),
         },
         {
-          path: 'Contact-Us',
-          name: 'ContactUs',
+          path: 'About-Us',
+          name: 'AboutUs',
           meta: { requiresAuth: true, roles: ['User'] },
-          component: () => import('@/views/client/ContactUsView.vue'),
+          component: () => import('@/views/client/AboutUsView.vue'),
         },
       ],
     },

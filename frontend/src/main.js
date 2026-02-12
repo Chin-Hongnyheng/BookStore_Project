@@ -37,6 +37,8 @@ import {
   faUsers,
   faEye,
   faDownload,
+  faPhone,
+  faMapMarkerAlt,
 } from '@fortawesome/free-solid-svg-icons'
 import { faHeart as farHeart } from '@fortawesome/free-regular-svg-icons'
 import { faCircleUser as farCircleUser } from '@fortawesome/free-regular-svg-icons'
@@ -45,6 +47,8 @@ import { faFacebook } from '@fortawesome/free-brands-svg-icons'
 import { faYoutube } from '@fortawesome/free-brands-svg-icons'
 import { faTwitter } from '@fortawesome/free-brands-svg-icons'
 import { faInstagram } from '@fortawesome/free-brands-svg-icons'
+import { faGithub } from '@fortawesome/free-brands-svg-icons'
+import { faLinkedin } from '@fortawesome/free-brands-svg-icons'
 
 library.add(
   faMagnifyingGlass,
@@ -84,8 +88,11 @@ library.add(
   faYoutube,
   faTwitter,
   faInstagram,
+  faGithub,
+  faLinkedin,
+  faPhone,
+  faMapMarkerAlt,
 )
-
 
 const app = createApp(App)
 

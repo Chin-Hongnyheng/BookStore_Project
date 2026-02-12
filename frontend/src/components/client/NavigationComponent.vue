@@ -2,17 +2,13 @@
   <nav>
     <ul class="nav-list">
       <li v-for="item in filterNavItems" :key="item.path">
-        <router-link
-        :to="item.path"
-        class="nav-link"
-        active-class="router-link-exact-active"
+        <router-link :to="item.path" class="nav-link" active-class="router-link-exact-active">
+          {{ item.title }}</router-link
         >
-      {{ item.title }}</router-link>
       </li>
     </ul>
   </nav>
 </template>
-
 
 <script setup lang="ts">
 import { computed } from 'vue'
@@ -39,33 +35,28 @@ const navItems = [
     roles: ['User'],
   },
   {
-    path: '/Contact-Us',
-    title: 'Contact Us',
+    path: '/About-Us',
+    title: 'About Us',
     roles: ['User'],
   },
 ]
 //Get roles from sessionStorage
-const rawRoles: string[] = JSON.parse(
-  sessionStorage.getItem('roles') || '[]'
-)
+const rawRoles: string[] = JSON.parse(sessionStorage.getItem('roles') || '[]')
 // Store userRole in array
-const userRoles = rawRoles.map(r => r.toLowerCase())
+const userRoles = rawRoles.map((r) => r.toLowerCase())
 
 //Filer Item and detect role
 const filterNavItems = computed(() =>
-  navItems.filter((item) => 
-  item.roles.some((role) => userRoles.includes(role.toLowerCase()))
+  navItems.filter((item) => item.roles.some((role) => userRoles.includes(role.toLowerCase()))),
 )
-);
 </script>
 <style scoped>
-
 .nav-list {
-  display: flex;             
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 20px;                
-  list-style: none;           
+  gap: 20px;
+  list-style: none;
   padding: 20px;
   margin: 30px;
 }
@@ -80,7 +71,10 @@ const filterNavItems = computed(() =>
   border-radius: 20px;
   text-decoration: none;
   color: black;
-  transition: transform 0.2s ease,background-color 0.3s, color 0.1s;
+  transition:
+    transform 0.2s ease,
+    background-color 0.3s,
+    color 0.1s;
 }
 
 .nav-link:hover {
@@ -90,9 +84,7 @@ const filterNavItems = computed(() =>
 
 /* Active route */
 .router-link-exact-active {
-  background-color: #3255FB;
+  background-color: #3255fb;
   color: white;
 }
-
-
 </style>
