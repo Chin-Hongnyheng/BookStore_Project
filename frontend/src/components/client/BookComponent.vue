@@ -8,9 +8,7 @@
         {{ product.hotBadgeText || '🔥 HOT' }}
       </span>
       <!-- Buy 1 Get 1 Badge -->
-      <span v-if="product.hasBuy1Get1" class="bogo-badge">
-        Buy 1 Get 1
-      </span>
+      <span v-if="product.hasBuy1Get1" class="bogo-badge"> Buy 1 Get 1 </span>
     </div>
 
     <!-- Rating Box -->
@@ -28,39 +26,34 @@
     <!-- Price Section -->
     <div class="price-section">
       <!-- NO DISCOUNT -->
-      <span
-        v-if="discount === 0"
-        class="finalPrice-style"
-      >
-        ${{ price.toFixed(2) }}
-      </span>
+      <span v-if="discount === 0" class="finalPrice-style"> ${{ price.toFixed(2) }} </span>
 
       <!-- WITH DISCOUNT -->
       <template v-else>
         <span class="price-style">${{ price.toFixed(2) }}</span>
         <div class="finalPrice-discount">
-          <span class="finalPrice-style">
-            ${{ finalPrice.toFixed(2) }}
-          </span>
+          <span class="finalPrice-style"> ${{ finalPrice.toFixed(2) }} </span>
           <span class="discount-style" v-if="product.discountType === 'percentage'">
             {{ discount }}% Off
           </span>
-          <span class="discount-style" v-else>
-            ${{ discount.toFixed(2) }} Off
-          </span>
+          <span class="discount-style" v-else> ${{ discount.toFixed(2) }} Off </span>
         </div>
       </template>
     </div>
 
-    <button class="button-btn">
-      Add To Cart
-      <font-awesome-icon icon="shopping-cart"/>
+    <button class="button-btn" @click="handleAddToCart" :class="{ added: justAdded }">
+      <template v-if="justAdded"> Added ✓ </template>
+      <template v-else>
+        Add To Cart
+        <font-awesome-icon icon="shopping-cart" />
+      </template>
     </button>
-
   </div>
 </template>
 
 <script>
+import { useCartStore } from '@/stores/cartStore'
+
 export default {
   name: 'BookComponent',
   props: {
@@ -73,7 +66,22 @@ export default {
     image: { type: String, required: true },
     rating: { type: Number, required: true },
   },
-};
+  data() {
+    return {
+      justAdded: false,
+    }
+  },
+  methods: {
+    handleAddToCart() {
+      const cartStore = useCartStore()
+      cartStore.addToCart(this.product)
+      this.justAdded = true
+      setTimeout(() => {
+        this.justAdded = false
+      }, 1500)
+    },
+  },
+}
 </script>
 
 <style scoped>
@@ -144,7 +152,7 @@ export default {
 .rating-box {
   width: 90px;
   height: 42px;
-  background-color: #3255FB;
+  background-color: #3255fb;
   border: 1px solid white;
   border-radius: 40px;
 
@@ -233,7 +241,7 @@ export default {
   justify-content: center; /* center icon + text horizontally */
   gap: 8px;
   padding: 10px 28px;
-  background-color: #3255FB;
+  background-color: #3255fb;
   color: white;
   border: none;
   font-weight: bold;
@@ -242,12 +250,19 @@ export default {
   font-size: 20px;
   cursor: pointer;
   margin-top: auto;
-  transition: transform 0.3s ease, background-color 0.3s;
+  transition:
+    transform 0.3s ease,
+    background-color 0.3s;
 }
 
 .button-btn:hover {
   background-color: #2643d6;
   transform: scale(1.1);
+}
+
+.button-btn.added {
+  background-color: #10b981;
+  transform: scale(1.05);
 }
 
 .button-btn svg {

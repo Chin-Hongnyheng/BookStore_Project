@@ -53,6 +53,18 @@ const router = createRouter({
           meta: { requiresAuth: true, roles: ['User'] },
           component: () => import('@/views/client/AboutUsView.vue'),
         },
+        {
+          path: 'Cart',
+          name: 'Cart',
+          meta: { requiresAuth: true, roles: ['User'] },
+          component: () => import('@/views/client/CartView.vue'),
+        },
+        {
+          path: 'Checkout',
+          name: 'Checkout',
+          meta: { requiresAuth: true, roles: ['User'] },
+          component: () => import('@/views/client/CheckoutView.vue'),
+        },
       ],
     },
     // Admin routes (with AdminLayout)
@@ -91,6 +103,11 @@ const router = createRouter({
           path: 'subscriptions',
           name: 'Subscriptions',
           component: () => import('@/views/admin/SubscriptionView.vue'),
+        },
+        {
+          path: 'orders',
+          name: 'Orders',
+          component: () => import('@/views/admin/OrdersView.vue'),
         },
       ],
     },

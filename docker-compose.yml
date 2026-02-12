@@ -12,6 +12,8 @@ services:
       DB_USER: postgres
       DB_PASSWORD: postgres
       DB_NAME: bookstore
+    env_file:
+      - ./backend/.env
     volumes:
       - ./backend/uploads:/app/uploads
       - /app/node_modules
@@ -42,7 +44,7 @@ services:
       - postgres
     env_file:
       - ./auth-service/.env
-    
+
   postgres:
     image: postgres:16
     container_name: postgres-db

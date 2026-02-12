@@ -39,6 +39,12 @@ import {
   faDownload,
   faPhone,
   faMapMarkerAlt,
+  faMinus,
+  faTicketAlt,
+  faClipboardList,
+  faFileImage,
+  faImage,
+  faBoxOpen,
 } from '@fortawesome/free-solid-svg-icons'
 import { faHeart as farHeart } from '@fortawesome/free-regular-svg-icons'
 import { faCircleUser as farCircleUser } from '@fortawesome/free-regular-svg-icons'
@@ -92,6 +98,12 @@ library.add(
   faLinkedin,
   faPhone,
   faMapMarkerAlt,
+  faMinus,
+  faTicketAlt,
+  faClipboardList,
+  faFileImage,
+  faImage,
+  faBoxOpen,
 )
 
 const app = createApp(App)

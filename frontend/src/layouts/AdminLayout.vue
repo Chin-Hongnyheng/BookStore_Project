@@ -101,6 +101,19 @@
             <font-awesome-icon icon="users" />
             Subscriptions
           </router-link>
+
+          <router-link
+            to="/admin/orders"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors"
+            :class="
+              $route.path === '/admin/orders'
+                ? 'bg-blue-50 text-blue-600'
+                : 'text-gray-700 hover:bg-gray-50'
+            "
+          >
+            <font-awesome-icon icon="clipboard-list" />
+            Orders
+          </router-link>
         </nav>
 
         <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
