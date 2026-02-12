@@ -10,6 +10,8 @@ import { join } from 'path';
 import { NewArrivalModule } from './newarrival/newarrival.module';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module';
+import { RecommendationModule } from './recommendation/recommendation.module';
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [
@@ -25,6 +27,8 @@ import { DatabaseModule } from './database/database.module';
     ProductGenreModule,
     NewArrivalModule,
     DatabaseModule,
+    RecommendationModule,
+    OrderModule,
   ],
   controllers: [AppController],
   providers: [AppService],
