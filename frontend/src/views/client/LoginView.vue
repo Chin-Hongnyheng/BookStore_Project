@@ -1,5 +1,31 @@
 <template>
-  <div class="login-page">
+  <!-- Shape Overlay (covers screen, animates away to reveal login) -->
+  <div v-if="showOverlay" class="overlay-wrapper">
+    <svg class="shape-overlays" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <defs>
+        <!-- Gradient 1: warm orange to soft blue -->
+        <linearGradient id="gradient1" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#ff8709" />
+          <!-- orange -->
+          <stop offset="100%" stop-color="#6ec1ff" />
+          <!-- soft blue -->
+        </linearGradient>
+
+        <!-- Gradient 2: peach to blue gradient -->
+        <linearGradient id="gradient2" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#ffd9b0" />
+          <!-- peach -->
+          <stop offset="100%" stop-color="#4a90e2" />
+          <!-- deeper blue -->
+        </linearGradient>
+      </defs>
+
+      <path class="shape-overlays__path" fill="url(#gradient2)" ref="path1"></path>
+      <path class="shape-overlays__path" fill="url(#gradient1)" ref="path2"></path>
+    </svg>
+  </div>
+
+  <div class="login-page" :class="{ 'fade-in': loginVisible }">
     <div class="login-container">
       <div class="left-login-container">
         <div class="inner-left-login-container">
@@ -71,12 +97,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { faUser } from '@fortawesome/free-regular-svg-icons'
 import { faLock } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
+import gsap from 'gsap'
 
 const router = useRouter()
 const faUserIcon = faUser
@@ -85,6 +112,87 @@ const faLockIcon = faLock
 const username = ref('')
 const password = ref('')
 const showPassword = ref(false)
+
+/* ─── Overlay animation state ─── */
+const showOverlay = ref(true)
+const loginVisible = ref(false)
+const path1 = ref<SVGPathElement | null>(null)
+const path2 = ref<SVGPathElement | null>(null)
+
+const numPoints = 10
+const numPaths = 2
+const delayPointsMax = 0.3
+const delayPerPath = 0.25
+
+onMounted(async () => {
+  await nextTick()
+
+  const paths = [path1.value, path2.value]
+  const allPoints: number[][] = []
+
+  // Initialize points — all at 0 (overlay covers screen from top)
+  for (let i = 0; i < numPaths; i++) {
+    const points: number[] = []
+    allPoints.push(points)
+    for (let j = 0; j < numPoints; j++) {
+      points.push(0)
+    }
+  }
+
+  function render() {
+    for (let i = 0; i < numPaths; i++) {
+      const pathEl = paths[i]
+      const points = allPoints[i]
+      if (!pathEl) continue
+
+      let d = `M 0 0 V ${points[0]} C`
+      for (let j = 0; j < numPoints - 1; j++) {
+        const p = ((j + 1) / (numPoints - 1)) * 100
+        const cp = p - ((1 / (numPoints - 1)) * 100) / 2
+        d += ` ${cp} ${points[j]} ${cp} ${points[j + 1]} ${p} ${points[j + 1]}`
+      }
+      d += ` V 0 H 0`
+      pathEl.setAttribute('d', d)
+    }
+  }
+
+  // Initial render — overlay fully covers screen
+  render()
+
+  // Build GSAP timeline — animate points from 0 → 100 (reveal)
+  const pointsDelay: number[] = []
+  for (let i = 0; i < numPoints; i++) {
+    pointsDelay[i] = Math.random() * delayPointsMax
+  }
+
+  const tl = gsap.timeline({
+    delay: 0.5, // small pause before animation starts
+    onUpdate: render,
+    onComplete: () => {
+      showOverlay.value = false
+    },
+    defaults: {
+      ease: 'power2.inOut',
+      duration: 0.9,
+    },
+  })
+
+  // Animate each path's points to 100 (off-screen bottom)
+  for (let i = 0; i < numPaths; i++) {
+    const points = allPoints[i]
+    const pathDelay = delayPerPath * (numPaths - i - 1)
+
+    for (let j = 0; j < numPoints; j++) {
+      const delay = pointsDelay[j]
+      tl.to(points, { [j]: 100 }, delay + pathDelay)
+    }
+  }
+
+  // Fade in login form slightly after overlay starts moving
+  setTimeout(() => {
+    loginVisible.value = true
+  }, 400)
+})
 
 const modal = ref<{
   show: boolean
@@ -178,6 +286,44 @@ const handleClose = () => {
 </script>
 
 <style scoped>
+/* ─── Shape Overlay ─── */
+.overlay-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  pointer-events: none;
+  background: #0e100f;
+}
+
+.shape-overlays {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* ─── Login fade-in ─── */
+.login-page {
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.login-page.fade-in {
+  opacity: 1;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(159, 159, 159, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
 html,
 body {
   margin: 0;
@@ -344,16 +490,7 @@ body {
   height: 217px;
   transition: width 0.3s;
 }
-.login-page {
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(159, 159, 159, 0.6);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
+/* .login-page layout is handled by .fade-in modifier above */
 .login-container {
   background-color: white;
   border: 1px solid white;
