@@ -201,7 +201,7 @@ export class TelegramService implements OnModuleInit {
   }
 
   /**
-   * 2️⃣ Notify USER when admin confirms their order
+   * 2️⃣ Notify USER when admin confirms their order — with invoice preview + PDF
    */
   async notifyUserOrderConfirmed(
     userChatId: string,
@@ -209,28 +209,102 @@ export class TelegramService implements OnModuleInit {
       id: number;
       totalAmount: number;
     },
+    invoicePreviewPath?: string | null,
+    invoicePdfPath?: string | null,
   ) {
     if (!this.isEnabled() || !userChatId) return;
 
-    const message =
-      `✅ Purchase Confirmed\n\n` +
-      `🆔 Order ID: #${order.id}\n` +
-      `💰 Total Paid: $${Number(order.totalAmount).toFixed(2)}\n\n` +
-      `📦 Your books are being prepared.\n` +
-      `Thank you for your purchase! 🎉`;
+    const invoiceNumber = `INV-${String(order.id).padStart(6, '0')}`;
+    const invoicesDir = path.join(process.cwd(), 'uploads', 'invoices');
 
-    try {
-      await axios.post(`${this.baseUrl}/sendMessage`, {
-        chat_id: userChatId,
-        text: message,
-      });
-      this.logger.log(
-        `Telegram confirmation sent to user (${userChatId}) for Order #${order.id}`,
-      );
-    } catch (error) {
-      this.logger.error(
-        `Failed to send Telegram notification to user: ${error.message}`,
-      );
+    // 1) Send preview image with caption
+    if (invoicePreviewPath) {
+      const previewFullPath = path.join(invoicesDir, invoicePreviewPath);
+      if (fs.existsSync(previewFullPath)) {
+        try {
+          await this.sendPhoto(
+            userChatId,
+            previewFullPath,
+            `✅ Purchase Confirmed\n\n` +
+              `📄 Invoice: ${invoiceNumber}\n` +
+              `💰 Total Paid: $${Number(order.totalAmount).toFixed(2)}\n\n` +
+              `Thank you for your purchase! 🎉`,
+          );
+        } catch (e) {
+          this.logger.error(`Failed to send preview image: ${e.message}`);
+        }
+      }
     }
+
+    // 2) Send full PDF invoice as document
+    if (invoicePdfPath) {
+      const pdfFullPath = path.join(invoicesDir, invoicePdfPath);
+      if (fs.existsSync(pdfFullPath)) {
+        try {
+          await this.sendDocument(
+            userChatId,
+            pdfFullPath,
+            `📄 Full invoice for Order #${order.id}`,
+          );
+        } catch (e) {
+          this.logger.error(`Failed to send PDF invoice: ${e.message}`);
+        }
+      }
+    }
+
+    // 3) Fallback: send text message if no files available
+    if (!invoicePreviewPath && !invoicePdfPath) {
+      const message =
+        `✅ Purchase Confirmed\n\n` +
+        `🆔 Order ID: #${order.id}\n` +
+        `💰 Total Paid: $${Number(order.totalAmount).toFixed(2)}\n\n` +
+        `📦 Your books are being prepared.\n` +
+        `Thank you for your purchase! 🎉`;
+
+      try {
+        await axios.post(`${this.baseUrl}/sendMessage`, {
+          chat_id: userChatId,
+          text: message,
+        });
+      } catch (e) {
+        this.logger.error(`Failed to send text confirmation: ${e.message}`);
+      }
+    }
+
+    this.logger.log(
+      `Telegram confirmation sent to user (${userChatId}) for Order #${order.id}`,
+    );
+  }
+
+  // ──────────────────────────────────────────────
+  // LOW-LEVEL SEND HELPERS
+  // ──────────────────────────────────────────────
+
+  /**
+   * Send a photo file to a Telegram chat
+   */
+  async sendPhoto(chatId: string, imagePath: string, caption?: string) {
+    const formData = new FormData();
+    formData.append('chat_id', chatId);
+    formData.append('photo', fs.createReadStream(imagePath));
+    if (caption) formData.append('caption', caption);
+
+    await axios.post(`${this.baseUrl}/sendPhoto`, formData, {
+      headers: formData.getHeaders(),
+    });
+  }
+
+  /**
+   * Send a document file to a Telegram chat
+   */
+  async sendDocument(chatId: string, filePath: string, caption?: string) {
+    const formData = new FormData();
+    formData.append('chat_id', chatId);
+    formData.append('document', fs.createReadStream(filePath));
+    if (caption) formData.append('caption', caption);
+
+    await axios.post(`${this.baseUrl}/sendDocument`, formData, {
+      headers: formData.getHeaders(),
+    });
   }
 }

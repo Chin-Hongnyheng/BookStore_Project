@@ -10,6 +10,7 @@ import { PromotionModule } from './promotion/promotion.module';
 import { CouponModule } from './coupon/coupon.module';
 import { OrderModule } from './order/order.module';
 import { TelegramModule } from './telegram/telegram.module';
+import { InvoiceModule } from './invoice/invoice.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 
@@ -38,6 +39,7 @@ import { join } from 'path';
     CouponModule,
     OrderModule,
     TelegramModule,
+    InvoiceModule,
   ],
   controllers: [AppController],
   providers: [AppService],

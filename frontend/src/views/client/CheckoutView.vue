@@ -78,13 +78,7 @@
                   <div v-else class="telegram-status overridden">
                     <span class="tg-icon">ℹ️</span>
                     <span>Using manual Chat ID below instead.</span>
-                    <button
-                      class="tg-change-btn"
-                      @click="
-                        manualOverride = false
-                        manualChatId = ''
-                      "
-                    >
+                    <button class="tg-change-btn" @click="resetToAutoConnect">
                       Use auto connect
                     </button>
                   </div>
@@ -274,6 +268,11 @@ const onTelegramClick = () => {
   if (!telegramPollTimer) {
     telegramPollTimer = setInterval(checkTelegramStatus, 3000)
   }
+}
+
+const resetToAutoConnect = () => {
+  manualOverride.value = false
+  manualChatId.value = ''
 }
 
 const onManualInput = () => {

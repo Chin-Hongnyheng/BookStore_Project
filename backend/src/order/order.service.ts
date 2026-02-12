@@ -7,6 +7,7 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
 import { Product } from '../product/entity/product.entity';
 import { TelegramService } from '../telegram/telegram.service';
+import { InvoiceService } from '../invoice/invoice.service';
 
 @Injectable()
 export class OrderService {
@@ -20,6 +21,7 @@ export class OrderService {
     @InjectRepository(Product)
     private readonly productRepo: Repository<Product>,
     private readonly telegramService: TelegramService,
+    private readonly invoiceService: InvoiceService,
   ) {}
 
   async create(dto: CreateOrderDto, paymentImage?: string) {
@@ -113,18 +115,53 @@ export class OrderService {
   async updateStatus(id: number, dto: UpdateOrderStatusDto) {
     const order = await this.findOne(id);
     order.status = dto.status;
-    const saved = await this.orderRepo.save(order);
+    let saved = await this.orderRepo.save(order);
     this.logger.log(`Order #${id} status updated to ${dto.status}`);
 
-    // Send Telegram notification to user when order is CONFIRMED
-    if (dto.status === 'CONFIRMED' && order.telegramChatId) {
-      await this.telegramService.notifyUserOrderConfirmed(
-        order.telegramChatId,
-        {
-          id: saved.id,
-          totalAmount: saved.totalAmount,
-        },
-      );
+    // Generate invoice + send Telegram notification on CONFIRMED
+    if (dto.status === 'CONFIRMED') {
+      try {
+        // Generate full PDF invoice
+        const pdfFileName = await this.invoiceService.generatePDF(saved);
+        saved.invoicePath = pdfFileName;
+        this.logger.log(
+          `Invoice PDF generated for Order #${id}: ${pdfFileName}`,
+        );
+
+        // Generate preview image (PNG)
+        const previewFileName =
+          await this.invoiceService.generatePreviewImage(saved);
+        saved.invoicePreviewPath = previewFileName;
+        this.logger.log(
+          `Invoice preview generated for Order #${id}: ${previewFileName}`,
+        );
+
+        // Save paths to database
+        saved = await this.orderRepo.save(saved);
+      } catch (err) {
+        this.logger.error(
+          `Failed to generate invoice for Order #${id}: ${err.message}`,
+        );
+      }
+
+      // Send Telegram notification (won't break confirmation if it fails)
+      if (order.telegramChatId) {
+        try {
+          await this.telegramService.notifyUserOrderConfirmed(
+            order.telegramChatId,
+            {
+              id: saved.id,
+              totalAmount: saved.totalAmount,
+            },
+            saved.invoicePreviewPath,
+            saved.invoicePath,
+          );
+        } catch (err) {
+          this.logger.error(
+            `Telegram notification failed for Order #${id}: ${err.message}`,
+          );
+        }
+      }
     }
 
     return saved;

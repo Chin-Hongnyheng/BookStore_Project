@@ -59,6 +59,12 @@ export class Order {
   @Column({ type: 'varchar', nullable: true })
   userId: string | null;
 
+  @Column({ type: 'varchar', nullable: true })
+  invoicePath: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  invoicePreviewPath: string | null;
+
   @OneToMany(() => OrderItem, (item) => item.order, {
     cascade: true,
     eager: true,
