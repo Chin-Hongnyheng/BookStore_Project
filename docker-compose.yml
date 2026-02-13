@@ -6,14 +6,10 @@ services:
     container_name: nest-backend
     ports:
       - "3000:3000"
-    depends_on:
-      - postgres
-    environment:
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      DB_NAME: bookstore
+    # depends_on:
+    #   - postgres
+    env_file:
+      - /backend/.env
     volumes:
       - ./backend/uploads:/app/uploads
       - /app/node_modules
@@ -40,8 +36,8 @@ services:
     volumes:
       - ./auth-service:/app
       - /app/node_modules
-    depends_on:
-      - postgres
+    # depends_on:
+    #   - postgres
     env_file:
       - ./auth-service/.env
     
