@@ -24,10 +24,25 @@ const router = createRouter({
       component: () => import('@/layouts/ClientLayout.vue'),
       children: [
         {
+          path: '/wishlist',
+          name: 'wishlist',
+          component: () => import('@/views/client/WishlistView.vue'),
+        },
+        {
           path: 'Home',
           name: 'Home',
           meta: { requiresAuth: true, roles: ['User'] },
           component: () => import('@/views/client/HomeView.vue'),
+        },
+        {
+          path: '/books/:id',
+          name: 'Book',
+          component: () => import('@/views/client/BookView.vue'),
+        },
+        {
+          path: '/:name/:id',
+          name: 'Genre',
+          component: () => import('@/views/client/GenreView.vue'),
         },
         {
           path: 'Explore',
@@ -65,34 +80,6 @@ const router = createRouter({
           meta: { requiresAuth: true, roles: ['User'] },
           component: () => import('@/views/client/CheckoutView.vue'),
         },
-        {
-          path: '/books/:id',
-          name: 'Book',
-          component: () => import('@/views/client/BookView.vue'),
-        },
-        {
-          path: '/:name/:id',
-          name: 'Genre',
-          component: () => import('@/views/client/GenreView.vue'),
-        },
-        {
-          path: '/Explore',
-          name: 'Explore',
-          meta: { requiresAuth: true, roles: ['User'] },
-          component: () => import('@/views/client/ExploreView.vue'),
-        },
-        {
-          path: '/New-Arrivals',
-          name: 'NewArrivals',
-          meta: { requiresAuth: true, roles: ['User'] },
-          component: () => import('@/views/client/NewArrivalsView.vue'),
-        },
-        {
-          path: '/Best-Selling-Books',
-          name: 'BestSellingBooks',
-          meta: { requiresAuth: true, roles: ['User'] },
-          component: () => import('@/views/client/BestSellingBooksView.vue'),
-        },
       ],
     },
     // Admin routes (with AdminLayout)
@@ -115,7 +102,7 @@ const router = createRouter({
         {
           path: 'books',
           name: 'Books',
-          component: () => import('@/views/admin/BookView.vue'),
+          component: () => import('@/views/admin/ManageBookView.vue'),
         },
         {
           path: 'promotions',

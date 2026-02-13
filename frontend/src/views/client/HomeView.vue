@@ -20,11 +20,13 @@
       <div class="scroll-container" ref="genreScroll">
         <div class="genre-style">
           <GenreComponent
-            v-for="genre in productStore.genresWithCount"
+            v-for="genre in productStore.genreCounts"
+            :genre="genre"
             :key="genre.id"
             :name="genre.name"
             :count="genre.total"
             :svg-icon="genre.svgIcon"
+            @genre-clicked="goToGenre"
           />
         </div>
       </div>
@@ -36,8 +38,8 @@
       <div class="book-style">
         <BookComponent
           v-for="product in visibleProducts"
-          :key="product.id"
           :product="product"
+          :key="product.id"
           :title="product.title"
           :author="product.author"
           :price="product.price"
@@ -45,14 +47,12 @@
           :finalPrice="product.finalPrice"
           :image="'http://localhost:3000/uploads/products/' + product.image"
           :rating="product.rating"
+          @book-clicked="goToBookProduct"
         />
       </div>
     </div>
 
-    <div
-      class="see-more-wrapper"
-      v-if="visibleProducts.length < productStore.discountedProducts.length"
-    >
+    <div class="see-more-wrapper" v-if="visibleProducts.length < productStore.products.length">
       <button class="see-more-btn" @click="showMore">See More</button>
     </div>
 
@@ -73,16 +73,16 @@ export default {
   name: 'HomeView',
   setup() {
     const productStore = useBookStore()
-    productStore.fetchGenres()
-    productStore.fetchProducts()
-    productStore.fetchPromotions()
-    productStore.fetchGenreCounts()
+    if (!productStore.products.length) {
+      productStore.fetchProducts()
+      productStore.fetchGenres()
+      productStore.fetchGenreCounts()
+      productStore.fetchPromotions()
+    }
 
     const visibleCount = ref(10)
 
-    const visibleProducts = computed(() =>
-      productStore.discountedProducts.slice(0, visibleCount.value),
-    )
+    const visibleProducts = computed(() => productStore.products.slice(0, visibleCount.value))
 
     const showMore = () => {
       visibleCount.value += 10
@@ -123,9 +123,17 @@ export default {
     ReadMoreComponent,
     GenreComponent,
   },
+  methods: {
+    goToBookProduct(product: any) {
+      this.$router.push(`/books/${product.id}`)
+    },
+    goToGenre(genre: any) {
+      this.$router.push(`/${genre.name}/${genre.id}`)
+    },
+  },
 }
 </script>
-<style>
+<style scoped>
 .homepage-container {
   display: flex;
   flex-direction: column;

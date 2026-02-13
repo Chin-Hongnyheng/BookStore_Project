@@ -24,7 +24,7 @@
 </template>
 <script>
 import { computed } from 'vue'
-import BookDisplayComponent from './BookDisplayComponent.vue'
+import BookDisplayComponent from '@/components/client/BookDisplayComponent.vue'
 import { useBookStore } from '@/stores/BookData'
 export default {
   name: 'ReadMoreComponent',

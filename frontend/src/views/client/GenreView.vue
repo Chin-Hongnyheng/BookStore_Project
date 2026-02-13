@@ -18,9 +18,7 @@
       />
     </div>
 
-    <p v-else class="empty-text">
-      No books found for this genre.
-    </p>
+    <p v-else class="empty-text">No books found for this genre.</p>
   </div>
 </template>
 
@@ -28,7 +26,7 @@
 import { computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useBookStore } from '@/stores/BookData'
-import BookComponent from '@/components/BookComponent.vue'
+import BookComponent from '@/components/client/BookComponent.vue'
 
 export default {
   name: 'GenreView',
@@ -49,8 +47,8 @@ export default {
     })
 
     const filteredBooks = computed(() => {
-      return bookStore.discountedProducts.filter(book =>
-        book.genreIds.includes(genreId.value)
+      return bookStore.products.filter(
+        (book) => book.genreIds.includes(genreId.value) && book.discount > 0,
       )
     })
 
@@ -61,9 +59,9 @@ export default {
     return {
       genreName,
       filteredBooks,
-      goToBook
+      goToBook,
     }
-  }
+  },
 }
 </script>
 
