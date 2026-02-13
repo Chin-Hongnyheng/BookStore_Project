@@ -143,11 +143,12 @@ export const useBookStore = defineStore('book', {
 
     async fetchProducts() {
       try {
-        const res = await axios.get('http://localhost:3000/products');
-        this.products = res.data;
-        console.log('Products fetched successfully');
+        const res = await axios.get('http://localhost:3000/products')
+        this.products = res.data
+        return res.data
       } catch (error) {
-        console.error('Failed to fetch products:', error);
+        console.error('Failed to fetch products:', error)
+        throw error
       }
     },
 

@@ -65,6 +65,34 @@ const router = createRouter({
           meta: { requiresAuth: true, roles: ['User'] },
           component: () => import('@/views/client/CheckoutView.vue'),
         },
+        {
+          path: '/books/:id',
+          name: 'Book',
+          component: () => import('@/views/client/BookView.vue'),
+        },
+        {
+          path: '/:name/:id',
+          name: 'Genre',
+          component: () => import('@/views/client/GenreView.vue'),
+        },
+        {
+          path: '/Explore',
+          name: 'Explore',
+          meta: { requiresAuth: true, roles: ['User'] },
+          component: () => import('@/views/client/ExploreView.vue'),
+        },
+        {
+          path: '/New-Arrivals',
+          name: 'NewArrivals',
+          meta: { requiresAuth: true, roles: ['User'] },
+          component: () => import('@/views/client/NewArrivalsView.vue'),
+        },
+        {
+          path: '/Best-Selling-Books',
+          name: 'BestSellingBooks',
+          meta: { requiresAuth: true, roles: ['User'] },
+          component: () => import('@/views/client/BestSellingBooksView.vue'),
+        },
       ],
     },
     // Admin routes (with AdminLayout)

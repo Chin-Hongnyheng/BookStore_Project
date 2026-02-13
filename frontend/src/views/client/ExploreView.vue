@@ -11,6 +11,7 @@
             :category="category"
             :name="category.name"
             :image="'http://localhost:3000/uploads/genres/' + category.image"
+            @category-clicked="goToCategory"
             />
         </div>
     </div>
@@ -48,7 +49,7 @@
     </div>
   </div>
 </template>
-<script>
+<script lang="ts">
 import { ref } from 'vue'
 import { useBookStore } from '@/stores/BookData';
 import CategoryComponent from '@/components/client/CategoryComponent.vue';
@@ -90,6 +91,11 @@ export default{
     components:{
         CategoryComponent, BookComponent, ShowcaseV2Component,
     },
+    methods:{
+      goToCategory(category:any){
+        this.$router.push(`/${category.name}/${category.id}`)
+      }
+    }
 };
 </script>
 <style scoped>

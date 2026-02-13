@@ -1,5 +1,5 @@
 <template>
-  <div class="book">
+  <div class="book" @click="handleClick">
     <!-- Book Image -->
     <div class="image-style">
       <img :src="image" alt="Book Image" />
@@ -79,6 +79,11 @@ export default {
       setTimeout(() => {
         this.justAdded = false
       }, 1500)
+    },
+  },
+  methods: {
+    handleClick() {
+      this.$emit('book-clicked', this.product)
     },
   },
 }
