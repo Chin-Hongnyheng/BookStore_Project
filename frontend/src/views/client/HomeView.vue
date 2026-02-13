@@ -135,14 +135,23 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  width: 100%;
 }
 .book-wrapper {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  .book-style {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 50px;
+    width: 100%;
+    justify-content: flex-start;
+    margin: 0 2rem;
+  }
 }
 .scroll-container {
-  width: 80%;
+  width: 95%;
   margin: 0 auto;
   /* hide scrollbar */
   overflow-x: hidden;
@@ -172,7 +181,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 80%;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -221,7 +230,7 @@ export default {
   display: flex;
   flex-wrap: wrap;
   gap: 50px;
-  width: 80%;
+  width: 100%;
   justify-content: flex-start;
   margin: 0 auto;
 }
