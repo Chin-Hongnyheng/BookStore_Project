@@ -13,6 +13,10 @@ import { TelegramModule } from './telegram/telegram.module';
 import { InvoiceModule } from './invoice/invoice.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { RecommendationModule } from './recommendation/recommendation.module';
+import { WishlistModule } from './wishlist/wishlist.module';
+import { DatabaseModule } from './Database/database.module';
+import { NewArrivalModule } from './newarrival/newarrival.module';
 
 @Module({
   imports: [
@@ -40,6 +44,10 @@ import { join } from 'path';
     OrderModule,
     TelegramModule,
     InvoiceModule,
+    NewArrivalModule,
+    DatabaseModule,
+    RecommendationModule,
+    WishlistModule,
   ],
   controllers: [AppController],
   providers: [AppService],

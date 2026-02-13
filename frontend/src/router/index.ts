@@ -36,6 +36,11 @@ const router = createRouter({
           component: () => import('@/views/client/ExploreView.vue'),
         },
         {
+          path: 'wishlist',
+          name: 'wishlist',
+          component: () => import('@/views/client/WishlistView.vue'),
+        },
+        {
           path: 'New-Arrivals',
           name: 'NewArrivals',
           meta: { requiresAuth: true, roles: ['User'] },
@@ -64,6 +69,11 @@ const router = createRouter({
           name: 'Checkout',
           meta: { requiresAuth: true, roles: ['User'] },
           component: () => import('@/views/client/CheckoutView.vue'),
+        },
+        {
+          path: '/:name/:id',
+          name: 'Genre',
+          component: () => import('@/views/client/GenreView.vue'),
         },
       ],
     },
