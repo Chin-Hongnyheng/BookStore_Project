@@ -278,17 +278,17 @@ html, body {
     cursor: pointer;
     pointer-events: auto;
 }
-.input-style{
-    font-family: 'Nunito';
-    font-size: 20px;
-    color: rgb(0, 0, 0);
-    font-weight: bold;
-    border: 1px solid #3255FB;
-    width: 70%;
-    height: 100%;
-    outline: none;
-    padding: 10px 40px 10px 20px;
-    border-radius: 10px;
+.input-style {
+  font-family: "Nunito";
+  font-size: 1.2vw; 
+  color: rgb(0, 0, 0);
+  font-weight: bold;
+  border: 2px solid #3255FB;
+  width: 82%;      
+  height: 56px;      
+  outline: none;
+  padding: 10px 40px 10px 20px;
+  border-radius: 10px;
 }
 .input-style:focus{
     border-color: #3255FB;

@@ -6,13 +6,20 @@
           <img src="@/assets/logo.png" alt="RTC Logo" class="logo-img" />
           <span class="greeting-style-text">Greeting Fellow Customer!</span>
           <span class="account-style-text">Don't have an account?</span>
-          <button class="register-button" @click="goToRegister">Register</button>
+          <button class="register-button" @click="goToRegister">
+            Register
+          </button>
         </div>
       </div>
       <div class="right-login-container">
         <span class="login-style-text">Login</span>
         <div class="input-container">
-          <input v-model="username" type="text" placeholder="Username" class="input-style" />
+          <input
+            v-model="username"
+            type="text"
+            placeholder="Username"
+            class="input-style"
+          />
           <FontAwesomeIcon :icon="faUserIcon" class="input-icon" />
         </div>
         <div class="input-container">
@@ -71,110 +78,107 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { faUser } from '@fortawesome/free-regular-svg-icons'
-import { faLock } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { useRouter } from 'vue-router'
-import axios from 'axios'
+import { ref } from "vue";
+import { faUser } from "@fortawesome/free-regular-svg-icons";
+import { faLock } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { useRouter } from "vue-router";
+import axios from "axios";
 
-const router = useRouter()
-const faUserIcon = faUser
-const faLockIcon = faLock
+const router = useRouter();
+const faUserIcon = faUser;
+const faLockIcon = faLock;
 
-const username = ref('')
-const password = ref('')
-const showPassword = ref(false)
+const username = ref("");
+const password = ref("");
+const showPassword = ref(false);
 
 const modal = ref<{
-  show: boolean
-  type: 'success' | 'error'
-  message: string
+  show: boolean;
+  type: "success" | "error";
+  message: string;
 }>({
   show: false,
-  type: 'success',
-  message: '',
-})
+  type: "success",
+  message: "",
+});
 
 const goToRegister = () => {
-  router.push('/register')
-}
+  router.push("/register");
+};
 
 const login = async () => {
-  sessionStorage.clear()
+  sessionStorage.clear();
 
   if (!username.value || !password.value) {
     modal.value = {
       show: true,
-      type: 'error',
-      message: 'All fields are required',
-    }
-    return
+      type: "error",
+      message: "All fields are required",
+    };
+    return;
   }
 
   try {
-    const res = await axios.post('http://localhost:3001/auth/login', {
+    const res = await axios.post("http://localhost:3001/auth/login", {
       username: username.value,
       password: password.value,
-    })
+    });
 
-    const { accessToken, refreshToken } = res.data
+    const { accessToken, refreshToken } = res.data;
 
     // Store tokens
-    sessionStorage.setItem('token', accessToken)
-    sessionStorage.setItem('refreshToken', refreshToken)
+    sessionStorage.setItem("token", accessToken);
+    sessionStorage.setItem("refreshToken", refreshToken);
 
     // Decode JWT payload
-    const payload = JSON.parse(atob(accessToken.split('.')[1]))
-    console.log('JWT Payload:', payload)
+    const payload = JSON.parse(atob(accessToken.split(".")[1]));
+    console.log("JWT Payload:", payload);
 
     // ✅ Store username
-    sessionStorage.setItem('username', payload.username || username.value)
-    console.log('Logged in username:', sessionStorage.getItem('username'))
+    sessionStorage.setItem("username", payload.username || username.value);
+    console.log("Logged in username:", sessionStorage.getItem("username"));
 
     // ✅ Store user ID for result queries
-    sessionStorage.setItem('userId', String(payload.sub || ''))
-    console.log('Logged in user ID:', sessionStorage.getItem('userId'))
+    sessionStorage.setItem("userId", String(payload.sub || ""));
+    console.log("Logged in user ID:", sessionStorage.getItem("userId"));
 
-    let roles: string[] = []
+    let roles: string[] = [];
 
     if (Array.isArray(payload.roles)) {
-      roles = payload.roles.map((r: string) => r.toLowerCase())
-    } else if (typeof payload.roles === 'string') {
-      roles = [payload.roles.toLowerCase()]
+      roles = payload.roles.map((r: string) => r.toLowerCase());
+    } else if (typeof payload.roles === "string") {
+      roles = [payload.roles.toLowerCase()];
     }
 
     // Store roles
-    sessionStorage.setItem('roles', JSON.stringify(roles))
-    console.log('Logged in user roles:', roles)
+    sessionStorage.setItem("roles", JSON.stringify(roles));
+    console.log("Logged in user roles:", roles);
 
-    modal.value = { show: true, type: 'success', message: 'Login successful!' }
+    modal.value = { show: true, type: "success", message: "Login successful!" };
   } catch (err: any) {
-    console.error(err)
+    console.error(err);
     modal.value = {
       show: true,
-      type: 'error',
-      message: 'Invalid username or password',
-    }
+      type: "error",
+      message: "Invalid username or password",
+    };
   }
-}
+};
 
 const handleOk = () => {
-  if (modal.value.type === 'success') {
-    const roles = JSON.parse(sessionStorage.getItem('roles') || '[]')
-    const isAdmin = roles.some((r: string) => r.toLowerCase() === 'admin')
-    const targetPath = isAdmin ? '/admin/dashboard' : '/Home'
-    router.replace(targetPath).then(() => {
-      window.location.reload()
-    })
+  if (modal.value.type === "success") {
+    router.replace("/Home").then(() => {
+      window.location.reload();
+    });
   } else {
-    modal.value.show = false
+    modal.value.show = false;
   }
-}
+};
 
 const handleClose = () => {
-  modal.value.show = false
-}
+  modal.value.show = false;
+};
 </script>
 
 <style scoped>
@@ -230,14 +234,14 @@ body {
 
 .close-button:hover {
   color: #ffffff;
-  background-color: #3255fb;
-  border: 1px solid #3255fb;
+  background-color: #3255FB;
+  border: 1px solid #3255FB;
 }
 
 .error-text {
   color: #e74c3c;
   font-weight: 900;
-  font-family: 'Nunito';
+  font-family: "Nunito";
   margin-bottom: 20px;
   font-size: 20px;
 }
@@ -245,17 +249,17 @@ body {
   color: #2ecc71;
   font-weight: bold;
   margin-bottom: 20px;
-  font-family: 'Nunito';
+  font-family: "Nunito";
   font-size: 20px;
 }
 .ok-button {
   padding: 8px 30px;
   border-radius: 8px;
-  background: #3255fb;
+  background: #3255FB;
   color: white;
   border: none;
   cursor: pointer;
-  font-family: 'Nunito';
+  font-family: "Nunito";
   font-weight: bold;
   font-size: 16px;
   transition: all 0.3s ease;
@@ -285,22 +289,22 @@ body {
   top: 50%;
   transform: translateY(-50%);
   font-size: 24px;
-  color: #3255fb;
+  color: #3255FB;
   cursor: pointer;
   pointer-events: auto;
 }
 .input-style:focus {
-  border-color: #3255fb;
+  border-color: #3255FB;
   box-shadow: 0 0 0 2px rgba(94, 171, 214, 0.2);
 }
 .input-style {
-  font-family: 'Nunito';
-  font-size: 20px;
+  font-family: "Nunito";
+  font-size: 1.2vw; 
   color: rgb(0, 0, 0);
   font-weight: bold;
-  border: 2px solid #3255fb;
-  width: 70%;
-  height: 100%;
+  border: 2px solid #3255FB;
+  width: 82%;      
+  height: 56px;      
   outline: none;
   padding: 10px 40px 10px 20px;
   border-radius: 10px;
@@ -308,8 +312,8 @@ body {
 .left-login-container {
   height: 100%;
   width: 50%;
-  border: 1px solid #3255fb;
-  background-color: #3255fb;
+  border: 1px solid #3255FB;
+  background-color: #3255FB;
   border-top-right-radius: 150px;
   border-bottom-right-radius: 150px;
   display: flex;
@@ -335,7 +339,7 @@ body {
   gap: 40px;
 }
 .login-style-text {
-  font-family: 'Nunito';
+  font-family: "Nunito";
   font-size: 40px;
   font-weight: 900;
 }
@@ -365,23 +369,23 @@ body {
   overflow: hidden;
 }
 .greeting-style-text {
-  font-family: 'Nunito';
+  font-family: "Nunito";
   font-weight: 900;
   font-size: 40px;
   color: white;
 }
 .account-style-text {
-  font-family: 'Nunito';
+  font-family: "Nunito";
   font-weight: 400;
   font-size: 18px;
   color: white;
 }
 .register-button {
-  font-family: 'Nunito';
+  font-family: "Nunito";
   font-size: 1.2vw;
   color: white;
   font-weight: bold;
-  background-color: #3255fb;
+  background-color: #3255FB;
   border: 2px solid white;
   border-radius: 1vw;
   width: 50%;
@@ -391,16 +395,16 @@ body {
   transition: all 0.3s ease;
 }
 .register-button:hover {
-  color: #3255fb;
-  border-color: #3255fb;
+  color: #3255FB;
+  border-color: #3255FB;
   background-color: white;
 }
 .login-button {
-  font-family: 'Nunito';
+  font-family: "Nunito";
   font-size: 1.2vw;
   color: white;
   font-weight: bold;
-  background-color: #3255fb;
+  background-color: #3255FB;
   border: 2px solid white;
   border-radius: 10px;
   width: 82%;
@@ -409,8 +413,8 @@ body {
   transition: all 0.3s ease;
 }
 .login-button:hover {
-  color: #3255fb;
-  border-color: #3255fb;
+  color: #3255FB;
+  border-color: #3255FB;
   background-color: white;
 }
 </style>

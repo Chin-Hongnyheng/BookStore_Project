@@ -4,7 +4,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    ConfigModule,
+    ConfigModule.forRoot({ isGlobal: true }),
+
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (cfg: ConfigService) => ({
@@ -16,8 +17,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         database: cfg.get('DB_NAME'),
         autoLoadEntities: true,
         synchronize: true,
-        retryAttempts: 10,
-        retryDelay: 3000,
+        ssl: false,
+        // ssl: {
+        //   rejectUnauthorized: false,
+        // },
       }),
     }),
   ],

@@ -66,7 +66,7 @@
         <!-- Developer 1 -->
         <div class="developer-card">
           <div class="developer-image">
-            <img src="../../assets/Oun.jpg" alt="Developer 1" />
+            <img src="../../assets/oun.jpg" alt="Developer 1" />
           </div>
           <h3 class="developer-name">Virak Rith</h3>
           <span class="developer-role">Backend Developer & UI Designer</span>

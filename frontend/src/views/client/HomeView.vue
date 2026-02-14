@@ -1,6 +1,6 @@
 <template>
   <div class="homepage-container">
-    <HeaderComponent />
+    <!-- <HeaderComponent /> -->
     <ShowcaseComponent />
 
     <!-- Genre -->
@@ -125,7 +125,7 @@ export default {
   },
 }
 </script>
-<style>
+<style scoped>
 .homepage-container {
   display: flex;
   flex-direction: column;
