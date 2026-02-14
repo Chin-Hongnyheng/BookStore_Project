@@ -9,9 +9,9 @@
           :product="product"
           :title="product.title"
           :author="product.author"
-          :price="Number(product.price)"
-          :discount="Number(product.discount)"
-          :finalPrice="Number(product.finalPrice)"
+          :price="product.price"
+          :discount="product.discount"
+          :finalPrice="product.finalPrice"
           :image="'http://localhost:3000/uploads/products/' + product.image"
           :rating="product.rating"
           @book-clicked="goToBookProduct"
@@ -67,7 +67,22 @@ onMounted(async () => {
   try {
     const res = await axios.get(`http://localhost:3000/wishlists/${userId.value}`)
 
-    wishlist.value = res.data.map((item: any) => item.product)
+    wishlist.value = res.data.map((item: any) => {
+    const p = item.product
+    const price = Number(p.price)
+    const discount = Number(p.discount ?? 0)
+
+    return {
+      ...p,
+      price,
+      discount,
+      finalPrice:
+        discount > 0
+          ? price - (price * discount) / 100
+          : price,
+    }
+  })
+
   } catch (err) {
     console.error('Error fetching wishlist:', err)
   } finally {

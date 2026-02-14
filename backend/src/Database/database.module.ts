@@ -16,11 +16,15 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         password: cfg.get('DB_PASSWORD'),
         database: cfg.get('DB_NAME'),
         autoLoadEntities: true,
-        synchronize: true,
-        ssl: false,
-        // ssl: {
-        //   rejectUnauthorized: false,
-        // },
+        synchronize: false,
+        ssl: {
+          rejectUnauthorized: false, // required for Neon
+        },
+        extra: {
+          ssl: {
+            rejectUnauthorized: false,
+          },
+        },
       }),
     }),
   ],

@@ -32,7 +32,7 @@
       <div class="scroll-container" ref="bookScroll">
         <div class="book-style">
           <BookComponent
-            v-for="product in productStore.products"
+            v-for="product in productStore.discountedProducts"
             :key="product.id"
             :product="product"
             :title="product.title"
@@ -42,6 +42,7 @@
             :finalPrice="Number(product.finalPrice)"
             :image="'http://localhost:3000/uploads/products/' + product.image"
             :rating="Number(product.rating)"
+            @book-clicked="goToBookProduct"
           />
         </div>
       </div>
@@ -62,10 +63,10 @@ export default {
 
     productStore.fetchGenres()
     productStore.fetchProducts()
-    productStore.fetchPromotions() // ← ADD THIS LINE
+    productStore.fetchPromotions()
 
     const bookScroll = ref(null)
-    const scrollAmount = 266 // width of one genre + gap
+    const scrollAmount = 266
 
     const scrollLeft = () => {
       if (bookScroll.value) {
@@ -94,6 +95,9 @@ export default {
   methods: {
     goToCategory(category: any) {
       this.$router.push(`/${category.name}/${category.id}`)
+    },
+    goToBookProduct(product: any){
+      this.$router.push(`/books/${product.id}`)
     },
   },
 }

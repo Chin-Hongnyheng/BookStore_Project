@@ -30,6 +30,12 @@ const router = createRouter({
           component: () => import('@/views/client/HomeView.vue'),
         },
         {
+          path: '/books/:id',
+          name: 'Book',
+          meta: { requiresAuth: true, roles: ['User'] },
+          component: () => import('@/views/client/SingleBookView.vue'),
+        },
+        {
           path: 'Explore',
           name: 'Explore',
           meta: { requiresAuth: true, roles: ['User'] },
@@ -38,6 +44,7 @@ const router = createRouter({
         {
           path: 'wishlist',
           name: 'wishlist',
+          meta: { requiresAuth: true, roles: ['User'] },
           component: () => import('@/views/client/WishlistView.vue'),
         },
         {
@@ -82,41 +89,47 @@ const router = createRouter({
       path: '/admin',
       component: () => import('@/layouts/AdminLayout.vue'),
       redirect: '/admin/dashboard',
-      meta: { requiresAuth: true, roles: ['Admin'] },
       children: [
         {
           path: 'dashboard',
           name: 'Dashboard',
+          meta: { requiresAuth: true, roles: ['admin'] },
           component: () => import('@/views/admin/DashboardView.vue'),
         },
         {
           path: 'genres',
           name: 'Genres',
+          meta: { requiresAuth: true, roles: ['Admin'] },
           component: () => import('@/views/admin/GenreView.vue'),
         },
         {
           path: 'books',
           name: 'Books',
+          meta: { requiresAuth: true, roles: ['Admin'] },
           component: () => import('@/views/admin/BookView.vue'),
         },
         {
           path: 'promotions',
           name: 'Promotions',
+          meta: { requiresAuth: true, roles: ['Admin'] },
           component: () => import('@/views/admin/PromotionView.vue'),
         },
         {
           path: 'coupons',
           name: 'Coupons',
+          meta: { requiresAuth: true, roles: ['Admin'] },
           component: () => import('@/views/admin/CouponView.vue'),
         },
         {
           path: 'subscriptions',
           name: 'Subscriptions',
+          meta: { requiresAuth: true, roles: ['Admin'] },
           component: () => import('@/views/admin/SubscriptionView.vue'),
         },
         {
           path: 'orders',
           name: 'Orders',
+          meta: { requiresAuth: true, roles: ['Admin'] },
           component: () => import('@/views/admin/OrdersView.vue'),
         },
       ],

@@ -1,5 +1,5 @@
 <template>
-    <div class="genre-container">
+    <div class="genre-container" @click="handleClick">
         <span v-html="svgIcon" class="item-icon"></span>
         <div class="item-style">
             <span class="item-text">{{ name }}</span>
@@ -11,6 +11,10 @@
     export default{
         name: 'GenreComponent',
         props:{
+            genre:{
+                type: Object,
+                required: true,
+            },
             name: {
                 type: String,
                 required: true,
@@ -23,6 +27,11 @@
                 type: Number,
                 required: true,
             }
+        },
+        methods:{
+            handleClick() {
+            this.$emit('genre-clicked', this.genre)
+            },
         }
     }
 </script>
@@ -57,7 +66,7 @@
 }
 .item-text{
     font-family: 'Nunito';
-    font-size: 26px;
+    font-size: 20px;
     font-weight: bold;
     color: currentColor;
 }

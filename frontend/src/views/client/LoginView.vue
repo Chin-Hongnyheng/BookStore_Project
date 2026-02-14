@@ -167,14 +167,18 @@ const login = async () => {
 };
 
 const handleOk = () => {
-  if (modal.value.type === "success") {
-    router.replace("/Home").then(() => {
-      window.location.reload();
-    });
+  if (modal.value.type === 'success') {
+    const roles = JSON.parse(sessionStorage.getItem('roles') || '[]')
+    const isAdmin = roles.some((r: string) => r.toLowerCase() === 'admin')
+    const targetPath = isAdmin ? '/admin/dashboard' : '/Home'
+    router.replace(targetPath).then(() => {
+      window.location.reload()
+    })
   } else {
-    modal.value.show = false;
+    modal.value.show = false
   }
-};
+}
+
 
 const handleClose = () => {
   modal.value.show = false;

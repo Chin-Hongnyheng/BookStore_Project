@@ -3,8 +3,8 @@
     <!-- <HeaderComponent /> -->
     <ShowcaseComponent />
 
-    <!-- Genre -->
-    <div class="genre-wrapper">
+     <!-- Genre -->
+  <div class="genre-wrapper">
       <div class="arrow-style">
         <span class="category-text">Shop by Category</span>
         <div class="arrow-buttons">
@@ -18,17 +18,19 @@
       </div>
 
       <div class="scroll-container" ref="genreScroll">
-        <div class="genre-style">
-          <GenreComponent
-            v-for="genre in productStore.genresWithCount"
-            :key="genre.id"
-            :name="genre.name"
-            :count="genre.total"
-            :svg-icon="genre.svgIcon"
-          />
-        </div>
+          <div class="genre-style">
+            <GenreComponent 
+              v-for="genre in productStore.genresWithCount"
+              :genre="genre"
+              :key="genre.id"
+              :name="genre.name"
+              :count="genre.total"
+              :svg-icon="genre.svgIcon"
+              @genre-clicked="goToGenre"
+            />
+          </div>
       </div>
-    </div>
+  </div>
 
     <!-- Book -->
     <div class="book-wrapper">
@@ -45,6 +47,7 @@
           :finalPrice="product.finalPrice"
           :image="'http://localhost:3000/uploads/products/' + product.image"
           :rating="product.rating"
+          @book-clicked="goToBookProduct"
         />
       </div>
     </div>
@@ -89,7 +92,7 @@ export default {
     }
 
     const genreScroll = ref<HTMLElement | null>(null)
-    const scrollAmount = 266 // width of one genre + gap
+    const scrollAmount = 266 
 
     const scrollLeft = () => {
       if (genreScroll.value) {
@@ -123,6 +126,14 @@ export default {
     ReadMoreComponent,
     GenreComponent,
   },
+  methods:{
+    goToBookProduct(product: any){
+      this.$router.push(`/books/${product.id}`)
+    },
+    goToGenre(genre:any){
+      this.$router.push(`/${genre.name}/${genre.id}`)
+    }
+  }
 }
 </script>
 <style scoped>

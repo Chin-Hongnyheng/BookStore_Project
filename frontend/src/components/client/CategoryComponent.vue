@@ -1,5 +1,5 @@
 <template>
-    <div class="category">
+    <div class="category" @click="handleClick">
         <div class="category-image-style">
             <img :src="image" alt="Category Image" />
              <span class="category-image-name">{{ name }}</span>
@@ -21,6 +21,11 @@
             image:{
                 type: String,
                 required: true,
+            },
+        },
+        methods:{
+            handleClick() {
+                this.$emit('category-clicked', this.category)
             },
         }
     }

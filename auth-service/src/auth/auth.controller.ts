@@ -5,7 +5,6 @@ import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { UsePipes } from '@nestjs/common';
 import { VerifyUserPipe } from '../common/pipes/user-verification.pipe';
-import { GoogleLoginDto } from './dto/google-login.dto';
 
 @Controller('auth')
 export class AuthController {

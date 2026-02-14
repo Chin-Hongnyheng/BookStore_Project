@@ -1,5 +1,5 @@
 <template>
-  <div class="book">
+  <div class="book" @click="handleClick">
     <div class="image-style" @click="$emit('book-clicked', product)">
       <img :src="image" alt="Book Image" />
 
@@ -143,8 +143,8 @@ export default {
         return
       }
 
-      const previousState = this.isWishlisted // Save previous state
-      this.isWishlisted = !this.isWishlisted // Optimistic update
+      const previousState = this.isWishlisted 
+      this.isWishlisted = !this.isWishlisted
 
       try {
         if (this.isWishlisted) {
@@ -170,10 +170,12 @@ export default {
 
 .book {
   width: 267px;
+  height: 700px;
   display: flex;
   flex-direction: column;
   gap: 12px;
   font-family: 'Nunito', sans-serif;
+  overflow: hidden;
 }
 
 .image-style {
@@ -197,7 +199,6 @@ export default {
   transform: scale(1.1);
 }
 
-/* Promotion stacking on the Top Left */
 .promo-container {
   position: absolute;
   top: 12px;
@@ -254,7 +255,6 @@ export default {
   background: white;
 }
 
-/* Rest of your existing styles */
 .rating-box {
   width: 75px;
   height: 35px;
@@ -295,18 +295,27 @@ export default {
 }
 
 .price-section {
-  margin-top: 5px;
+  min-height: 45px; 
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; 
 }
+
 .price-style {
   text-decoration: line-through;
   color: #bbb;
   font-size: 14px;
+  line-height: 1;
+  margin-bottom: 2px;
+  display: block; 
 }
+
 .finalPrice-discount {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  height: 28px;
 }
 .finalPrice-style {
   font-size: 20px;
