@@ -19,7 +19,6 @@ let Product = class Product {
     description;
     image;
     price;
-    discount;
     inStock;
     countSold;
     published;
@@ -46,17 +45,13 @@ __decorate([
     __metadata("design:type", String)
 ], Product.prototype, "description", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
+    (0, typeorm_1.Column)({ type: 'varchar', nullable: true }),
+    __metadata("design:type", Object)
 ], Product.prototype, "image", void 0);
 __decorate([
     (0, typeorm_1.Column)('decimal', { precision: 10, scale: 2 }),
     __metadata("design:type", Number)
 ], Product.prototype, "price", void 0);
-__decorate([
-    (0, typeorm_1.Column)('decimal', { precision: 10, scale: 2, default: 0 }),
-    __metadata("design:type", Number)
-], Product.prototype, "discount", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", Number)

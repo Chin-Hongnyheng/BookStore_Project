@@ -4,9 +4,8 @@ export declare class Product {
     title: string;
     author: string;
     description: string;
-    image: string;
+    image: string | null;
     price: number;
-    discount: number;
     inStock: number;
     countSold: number;
     published: Date | null;

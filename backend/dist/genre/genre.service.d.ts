@@ -5,9 +5,9 @@ export declare class GenreService {
     private readonly genreRepo;
     private readonly logger;
     constructor(genreRepo: Repository<Genre>);
-    create(dto: CreateGenreDto): Promise<Genre>;
+    create(dto: CreateGenreDto, file?: Express.Multer.File): Promise<Genre>;
     findAll(): Promise<Genre[]>;
     findOne(id: number): Promise<Genre>;
-    update(id: number, dto: Partial<CreateGenreDto>): Promise<Genre>;
-    remove(id: number): Promise<void>;
+    update(id: number, dto: Partial<CreateGenreDto>, file?: Express.Multer.File): Promise<Genre>;
+    remove(id: number): Promise<Genre>;
 }

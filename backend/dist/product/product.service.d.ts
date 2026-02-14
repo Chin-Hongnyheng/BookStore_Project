@@ -5,11 +5,10 @@ import { Genre } from '../genre/entity/genre.entity';
 export declare class ProductService {
     private readonly productRepo;
     private readonly genreRepo;
-    private readonly logger;
     constructor(productRepo: Repository<Product>, genreRepo: Repository<Genre>);
-    create(dto: CreateProductDto, file?: any): Promise<Product>;
+    create(dto: CreateProductDto, file?: Express.Multer.File): Promise<Product>;
     findAll(): Promise<Product[]>;
     findOne(id: number): Promise<Product>;
-    update(id: number, dto: Partial<CreateProductDto>, file?: any): Promise<Product>;
-    remove(id: number): Promise<void>;
+    update(id: number, dto: Partial<CreateProductDto>, file?: Express.Multer.File): Promise<Product>;
+    remove(id: number): Promise<Product>;
 }

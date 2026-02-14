@@ -18,21 +18,22 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const genre_entity_1 = require("./entity/genre.entity");
-const common_2 = require("@nestjs/common");
 let GenreService = GenreService_1 = class GenreService {
     genreRepo;
-    logger = new common_2.Logger(GenreService_1.name);
+    logger = new common_1.Logger(GenreService_1.name);
     constructor(genreRepo) {
         this.genreRepo = genreRepo;
     }
-    async create(dto) {
-        console.log('RAW console.log reached');
-        this.logger.log('create successfully');
-        const genre = this.genreRepo.create(dto);
-        return await this.genreRepo.save(genre);
+    async create(dto, file) {
+        const genre = this.genreRepo.create({
+            ...dto,
+            image: file?.filename ?? null,
+        });
+        this.logger.log('Genre created');
+        return this.genreRepo.save(genre);
     }
     async findAll() {
-        return await this.genreRepo.find();
+        return this.genreRepo.find();
     }
     async findOne(id) {
         const genre = await this.genreRepo.findOne({ where: { id } });
@@ -40,14 +41,18 @@ let GenreService = GenreService_1 = class GenreService {
             throw new common_1.NotFoundException(`Genre with id ${id} not found`);
         return genre;
     }
-    async update(id, dto) {
+    async update(id, dto, file) {
         const genre = await this.findOne(id);
         Object.assign(genre, dto);
-        return await this.genreRepo.save(genre);
+        if (file) {
+            genre.image = file.filename;
+        }
+        this.logger.log('Genre updated');
+        return this.genreRepo.save(genre);
     }
     async remove(id) {
         const genre = await this.findOne(id);
-        await this.genreRepo.remove(genre);
+        return this.genreRepo.remove(genre);
     }
 };
 exports.GenreService = GenreService;

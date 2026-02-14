@@ -11,7 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var ProductService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductService = void 0;
 const common_1 = require("@nestjs/common");
@@ -19,10 +18,9 @@ const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const product_entity_1 = require("./entity/product.entity");
 const genre_entity_1 = require("../genre/entity/genre.entity");
-let ProductService = ProductService_1 = class ProductService {
+let ProductService = class ProductService {
     productRepo;
     genreRepo;
-    logger = new common_1.Logger(ProductService_1.name);
     constructor(productRepo, genreRepo) {
         this.productRepo = productRepo;
         this.genreRepo = genreRepo;
@@ -32,69 +30,50 @@ let ProductService = ProductService_1 = class ProductService {
             ? await this.genreRepo.findBy({ id: (0, typeorm_2.In)(dto.genreIds) })
             : [];
         const product = this.productRepo.create({
-            title: dto.title,
-            author: dto.author,
-            description: dto.description,
-            image: file?.filename || '',
-            price: dto.price,
-            discount: dto.discount ?? 0,
-            inStock: dto.inStock,
-            pages: dto.pages,
-            language: dto.language,
+            ...dto,
             published: dto.published ? new Date(dto.published) : null,
+            image: file?.filename ?? null,
             genres,
-            rating: dto.rating ?? 0,
         });
-        console.log('Product created successfully');
+        console.log("Data created");
         return this.productRepo.save(product);
     }
     async findAll() {
-        return this.productRepo.find();
+        return this.productRepo.find({ relations: ['genres'] });
     }
     async findOne(id) {
-        const product = await this.productRepo.findOne({ where: { id } });
+        const product = await this.productRepo.findOne({
+            where: { id },
+            relations: ['genres'],
+        });
         if (!product)
             throw new common_1.NotFoundException(`Product with id ${id} not found`);
         return product;
     }
     async update(id, dto, file) {
         const product = await this.findOne(id);
-        if (dto.title !== undefined)
-            product.title = dto.title;
-        if (dto.author !== undefined)
-            product.author = dto.author;
-        if (dto.description !== undefined)
-            product.description = dto.description;
-        if (dto.price !== undefined)
-            product.price = Number(dto.price);
-        if (dto.discount !== undefined)
-            product.discount = Number(dto.discount);
-        if (dto.inStock !== undefined)
-            product.inStock = Number(dto.inStock);
-        if (dto.pages !== undefined)
-            product.pages = Number(dto.pages);
-        if (dto.language !== undefined)
-            product.language = dto.language;
-        if (dto.published !== undefined)
-            product.published = new Date(dto.published);
-        if (dto.rating !== undefined)
-            product.rating = Number(dto.rating);
+        if (dto.published === '') {
+            dto.published = undefined;
+            product.published = null;
+        }
+        Object.assign(product, dto);
+        if (file) {
+            product.image = file.filename;
+        }
         if (dto.genreIds?.length) {
             const genres = await this.genreRepo.findBy({ id: (0, typeorm_2.In)(dto.genreIds) });
             product.genres = genres;
         }
-        if (file)
-            product.image = file.filename;
-        console.log('Product updated successfully');
+        console.log("Data Updated");
         return this.productRepo.save(product);
     }
     async remove(id) {
         const product = await this.findOne(id);
-        await this.productRepo.remove(product);
+        return this.productRepo.remove(product);
     }
 };
 exports.ProductService = ProductService;
-exports.ProductService = ProductService = ProductService_1 = __decorate([
+exports.ProductService = ProductService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(product_entity_1.Product)),
     __param(1, (0, typeorm_1.InjectRepository)(genre_entity_1.Genre)),

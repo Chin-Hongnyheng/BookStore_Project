@@ -8,30 +8,46 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
+const config_1 = require("@nestjs/config");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
-const typeorm_1 = require("@nestjs/typeorm");
 const genre_module_1 = require("./genre/genre.module");
 const product_module_1 = require("./product/product.module");
+const product_genre_module_1 = require("./product-genre/product-genre.module");
+const promotion_module_1 = require("./promotion/promotion.module");
+const coupon_module_1 = require("./coupon/coupon.module");
+const order_module_1 = require("./order/order.module");
+const telegram_module_1 = require("./telegram/telegram.module");
+const invoice_module_1 = require("./invoice/invoice.module");
+const serve_static_1 = require("@nestjs/serve-static");
+const path_1 = require("path");
+const recommendation_module_1 = require("./recommendation/recommendation.module");
+const wishlist_module_1 = require("./wishlist/wishlist.module");
+const database_module_1 = require("./Database/database.module");
+const newarrival_module_1 = require("./newarrival/newarrival.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            typeorm_1.TypeOrmModule.forRoot({
-                type: 'postgres',
-                host: 'postgres',
-                port: 5432,
-                username: 'postgres',
-                password: 'postgres',
-                database: 'bookstore',
-                entities: [__dirname + '/**/*.entity{.ts,.js}'],
-                autoLoadEntities: true,
-                synchronize: true,
+            config_1.ConfigModule.forRoot({ isGlobal: true }),
+            serve_static_1.ServeStaticModule.forRoot({
+                rootPath: (0, path_1.join)(__dirname, '..', 'uploads'),
+                serveRoot: '/uploads',
             }),
             genre_module_1.GenreModule,
-            product_module_1.ProductModule
+            product_module_1.ProductModule,
+            product_genre_module_1.ProductGenreModule,
+            promotion_module_1.PromotionModule,
+            coupon_module_1.CouponModule,
+            order_module_1.OrderModule,
+            telegram_module_1.TelegramModule,
+            invoice_module_1.InvoiceModule,
+            newarrival_module_1.NewArrivalModule,
+            database_module_1.DatabaseModule,
+            recommendation_module_1.RecommendationModule,
+            wishlist_module_1.WishlistModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

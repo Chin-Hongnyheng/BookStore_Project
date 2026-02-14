@@ -15,6 +15,9 @@ const product_entity_1 = require("../../product/entity/product.entity");
 let Genre = class Genre {
     id;
     name;
+    description;
+    image;
+    svgIcon;
     products;
 };
 exports.Genre = Genre;
@@ -26,6 +29,18 @@ __decorate([
     (0, typeorm_1.Column)({ unique: true }),
     __metadata("design:type", String)
 ], Genre.prototype, "name", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Genre.prototype, "description", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'varchar', nullable: true }),
+    __metadata("design:type", Object)
+], Genre.prototype, "image", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'text', nullable: true }),
+    __metadata("design:type", String)
+], Genre.prototype, "svgIcon", void 0);
 __decorate([
     (0, typeorm_1.ManyToMany)(() => product_entity_1.Product, (product) => product.genres),
     __metadata("design:type", Array)

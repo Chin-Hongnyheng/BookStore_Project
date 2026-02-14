@@ -13,10 +13,22 @@ exports.CreateGenreDto = void 0;
 const class_validator_1 = require("class-validator");
 class CreateGenreDto {
     name;
+    description;
+    svgIcon;
 }
 exports.CreateGenreDto = CreateGenreDto;
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateGenreDto.prototype, "name", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateGenreDto.prototype, "description", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateGenreDto.prototype, "svgIcon", void 0);
 //# sourceMappingURL=create-genre.dto.js.map
