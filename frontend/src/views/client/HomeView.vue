@@ -45,7 +45,7 @@
           :price="product.price"
           :discount="product.discount"
           :finalPrice="product.finalPrice"
-          :image="`${import.meta.env.VITE_API_BASE}/uploads/products/${product.image}`"
+          :image="getImageUrl(product.image)"
           :rating="product.rating"
           @book-clicked="goToBookProduct"
         />
@@ -68,10 +68,11 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import BookComponent from '@/components/client/BookComponent.vue'
-import ShowcaseComponent from '@/components/client/ShowcaseComponent.vue'
 import ReadMoreComponent from '@/components/client/ReadMoreComponent.vue'
 import GenreComponent from '@/components/client/GenreComponent.vue'
+// @ts-ignore
 import { useBookStore } from '@/stores/BookData'
+import ShowcaseComponent from '@/components/client/ShowcaseComponent.vue'
 
 const router = useRouter()
 const productStore = useBookStore()
@@ -107,6 +108,9 @@ const goToBookProduct = (product: any) => {
 }
 const goToGenre = (genre: any) => {
   router.push(`/${genre.name}/${genre.id}`)
+}
+const getImageUrl = (image: string) => {
+  return `${import.meta.env.VITE_API_BASE}/uploads/products/${image}`
 }
 </script>
 
