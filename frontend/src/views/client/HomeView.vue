@@ -64,78 +64,52 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import BookComponent from '@/components/client/BookComponent.vue'
 import ShowcaseComponent from '@/components/client/ShowcaseComponent.vue'
-import { useBookStore } from '@/stores/BookData'
 import ReadMoreComponent from '@/components/client/ReadMoreComponent.vue'
 import GenreComponent from '@/components/client/GenreComponent.vue'
+import { useBookStore } from '@/stores/BookData'
 
-export default {
-  name: 'HomeView',
-  setup() {
-    const productStore = useBookStore()
-    productStore.fetchGenres()
-    productStore.fetchProducts()
-    productStore.fetchPromotions()
-    productStore.fetchGenreCounts()
+const router = useRouter()
+const productStore = useBookStore()
 
-    const visibleCount = ref(10)
+// fetch data
+productStore.fetchGenres()
+productStore.fetchProducts()
+productStore.fetchPromotions()
+productStore.fetchGenreCounts()
 
-    const visibleProducts = computed(() =>
-      productStore.discountedProducts.slice(0, visibleCount.value),
-    )
+// visible products
+const visibleCount = ref(10)
+const visibleProducts = computed(() =>
+  productStore.discountedProducts.slice(0, visibleCount.value),
+)
+const showMore = () => {
+  visibleCount.value += 10
+}
 
-    const showMore = () => {
-      visibleCount.value += 10
-    }
+// scroll logic
+const genreScroll = ref<HTMLElement | null>(null)
+const scrollAmount = 266
+const scrollLeft = () => {
+  genreScroll.value?.scrollBy({ left: -scrollAmount, behavior: 'smooth' })
+}
+const scrollRight = () => {
+  genreScroll.value?.scrollBy({ left: scrollAmount, behavior: 'smooth' })
+}
 
-    const genreScroll = ref<HTMLElement | null>(null)
-    const scrollAmount = 266 
-
-    const scrollLeft = () => {
-      if (genreScroll.value) {
-        genreScroll.value.scrollBy({
-          left: -scrollAmount,
-          behavior: 'smooth',
-        })
-      }
-    }
-
-    const scrollRight = () => {
-      if (genreScroll.value) {
-        genreScroll.value.scrollBy({
-          left: scrollAmount,
-          behavior: 'smooth',
-        })
-      }
-    }
-    return {
-      productStore,
-      visibleProducts,
-      showMore,
-      scrollLeft,
-      scrollRight,
-      genreScroll,
-    }
-  },
-  components: {
-    BookComponent,
-    ShowcaseComponent,
-    ReadMoreComponent,
-    GenreComponent,
-  },
-  methods:{
-    goToBookProduct(product: any){
-      this.$router.push(`/books/${product.id}`)
-    },
-    goToGenre(genre:any){
-      this.$router.push(`/${genre.name}/${genre.id}`)
-    }
-  }
+// navigation
+const goToBookProduct = (product: any) => {
+  router.push(`/books/${product.id}`)
+}
+const goToGenre = (genre: any) => {
+  router.push(`/${genre.name}/${genre.id}`)
 }
 </script>
+
 <style scoped>
 .homepage-container {
   display: flex;
