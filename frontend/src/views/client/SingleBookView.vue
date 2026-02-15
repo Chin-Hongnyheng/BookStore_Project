@@ -6,7 +6,7 @@
         <div class="column cover-col">
            <div class="cover-wrapper">
             <img
-            :src="`${import.meta.env.VITE_API_BASE}/uploads/products/${book.image}`"
+            :src="getBookImage(book)"
             class="book-image"
             />
             </div>
@@ -107,6 +107,7 @@ import { useCartStore } from '@/stores/cartStore'
 const route = useRoute()
 const bookStore = useBookStore()
 const cartStore = useCartStore()
+const API_BASE_URL = import.meta.env.VITE_API_BASE
 
 const book = ref<any>(null)
 const justAdded = ref(false)
@@ -126,6 +127,8 @@ const loadBook = async () => {
 
   if (book.value) await checkWishlist()
 }
+
+const getBookImage = (book: any) => `${API_BASE_URL}/uploads/products/${book.image}`
 
 // -----------------------------
 // ADD TO CART
