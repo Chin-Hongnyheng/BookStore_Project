@@ -25,6 +25,7 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
+// @ts-ignore
 import { useBookStore } from '@/stores/BookData'
 import BookComponent from '@/components/client/BookComponent.vue'
 
@@ -45,7 +46,7 @@ function parseJwt(token: string) {
   }
 }
 
-function goToBookProduct(product) {
+function goToBookProduct(product : any) {
   router.push(`/books/${product.id}`)
 }
 

@@ -12,7 +12,7 @@
         :price="book.price"
         :discount="book.discount"
         :finalPrice="book.finalPrice"
-        :image="`${import.meta.env.VITE_API_BASE}/uploads/products/${book.image}`"
+        :image="`${API_BASE_URL}/uploads/products/${book.image}`"
         :rating="book.rating"
         @book-clicked="goToBook"
       />
@@ -34,65 +34,63 @@
 </template>
 
 
-<script lang="ts">
-import { computed, ref, onMounted } from 'vue'
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+// @ts-ignore
 import { useBookStore } from '@/stores/BookData'
 import BookComponent from '@/components/client/BookComponent.vue'
 
-export default {
-  name: 'GenreView',
-  components: { BookComponent },
+interface Product {
+  id: number
+  title: string
+  author: string
+  price: number
+  discount: number
+  finalPrice: number
+  image: string
+  rating: number
+  genreIds: number[]
+}
 
-  setup() {
-    const route = useRoute()
-    const router = useRouter()
-    const bookStore = useBookStore()
+const route = useRoute()
+const router = useRouter()
+const bookStore = useBookStore()
 
-    const visibleCount = ref(10)
+const visibleCount = ref(10)
+const API_BASE_URL = import.meta.env.VITE_API_BASE as string
 
-    const genreId = computed(() => Number(route.params.id))
-    const genreName = computed(() => route.params.name)
+const genreId = computed(() => Number(route.params.id))
+const genreName = computed(() => route.params.name as string)
 
-    onMounted(async () => {
-      if (!bookStore.products.length) {
-        await bookStore.fetchProducts()
-      }
-    })
+onMounted(async () => {
+  if (!bookStore.products.length) {
+    await bookStore.fetchProducts()
+  }
+})
 
-    const filteredBooks = computed(() => {
-      if (genreId.value === 0) {
-        return bookStore.discountedProducts
-      }
+const filteredBooks = computed<Product[]>(() => {
+  if (genreId.value === 0) {
+    return bookStore.discountedProducts
+  }
+  return bookStore.discountedProducts.filter((book: Product) =>
+    book.genreIds.includes(genreId.value)
+  )
+})
 
-      return bookStore.discountedProducts.filter(book =>
-        book.genreIds.includes(genreId.value)
-      )
-    })
+const visibleBooks = computed<Product[]>(() =>
+  filteredBooks.value.slice(0, visibleCount.value)
+)
 
-    const visibleBooks = computed(() =>
-      filteredBooks.value.slice(0, visibleCount.value)
-    )
+function showMore() {
+  visibleCount.value += 12
+}
 
-    function showMore() {
-      visibleCount.value += 12
-    }
-
-    function goToBook(book: any) {
-      router.push(`/books/${book.id}`)
-    }
-
-    return {
-      genreName,
-      filteredBooks,
-      visibleBooks,
-      visibleCount,
-      showMore,
-      goToBook,
-    }
-  },
+function goToBook(book: Product) {
+  router.push(`/books/${book.id}`)
 }
 </script>
+
 <style scoped>
 .genre-wrapper {
   display: flex;

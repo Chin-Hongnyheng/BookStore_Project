@@ -9,7 +9,7 @@
           :key="category.id"
           :category="category"
           :name="category.name"
-          :image="`${import.meta.env.VITE_API_BASE}/uploads/genres/${category.image}`"
+          :image="`${API_BASE_URL}/uploads/genres/${category.image}`"
           @category-clicked="goToCategory"
         />
       </div>
@@ -40,7 +40,7 @@
             :price="Number(product.price)"
             :discount="Number(product.discount)"
             :finalPrice="Number(product.finalPrice)"
-            :image="`${import.meta.env.VITE_API_BASE}/uploads/products/${product.image}`"
+            :image="`${API_BASE_URL}/uploads/products/${product.image}`"
             :rating="Number(product.rating)"
             @book-clicked="goToBookProduct"
           />
@@ -49,61 +49,54 @@
     </div>
   </div>
 </template>
-<script lang="ts">
+<script setup lang="ts">
 import { ref } from 'vue'
+// @ts-ignore
 import { useBookStore } from '@/stores/BookData'
 import CategoryComponent from '@/components/client/CategoryComponent.vue'
 import BookComponent from '@/components/client/BookComponent.vue'
 import ShowcaseV2Component from '@/components/client/ShowcaseV2Component.vue'
 
-export default {
-  name: 'ExploreView',
-  setup() {
-    const productStore = useBookStore()
-    
-    
+const productStore = useBookStore()
 
-    productStore.fetchGenres()
-    productStore.fetchProducts()
-    productStore.fetchPromotions()
+productStore.fetchGenres()
+productStore.fetchProducts()
+productStore.fetchPromotions()
 
-    const bookScroll = ref(null)
-    const scrollAmount = 266
+const bookScroll = ref<HTMLElement | null>(null)
+const scrollAmount = 266
 
-    const scrollLeft = () => {
-      if (bookScroll.value) {
-        bookScroll.value.scrollBy({
-          left: -scrollAmount,
-          behavior: 'smooth',
-        })
-      }
-    }
+const scrollLeft = () => {
+  if (bookScroll.value) {
+    bookScroll.value.scrollBy({
+      left: -scrollAmount,
+      behavior: 'smooth',
+    })
+  }
+}
 
-    const scrollRight = () => {
-      if (bookScroll.value) {
-        bookScroll.value.scrollBy({
-          left: scrollAmount,
-          behavior: 'smooth',
-        })
-      }
-    }
-    return { productStore, scrollLeft, scrollRight, bookScroll }
-  },
-  components: {
-    CategoryComponent,
-    BookComponent,
-    ShowcaseV2Component,
-  },
-  methods: {
-    goToCategory(category: any) {
-      this.$router.push(`/${category.name}/${category.id}`)
-    },
-    goToBookProduct(product: any){
-      this.$router.push(`/books/${product.id}`)
-    },
-  },
+const scrollRight = () => {
+  if (bookScroll.value) {
+    bookScroll.value.scrollBy({
+      left: scrollAmount,
+      behavior: 'smooth',
+    })
+  }
+}
+
+// **Move env variable here**
+const API_BASE_URL = import.meta.env.VITE_API_BASE
+
+// Navigation methods
+const goToCategory = (category: any) => {
+  window.location.href = `/${category.name}/${category.id}`
+}
+
+const goToBookProduct = (product: any) => {
+  window.location.href = `/books/${product.id}`
 }
 </script>
+
 <style scoped>
 .explore-wrapper {
   display: flex;
