@@ -9,7 +9,7 @@
           :key="category.id"
           :category="category"
           :name="category.name"
-          :image="'http://localhost:3000/uploads/genres/' + category.image"
+          :image="`${import.meta.env.VITE_API_BASE}/uploads/genres/${category.image}`"
           @category-clicked="goToCategory"
         />
       </div>
@@ -40,7 +40,7 @@
             :price="Number(product.price)"
             :discount="Number(product.discount)"
             :finalPrice="Number(product.finalPrice)"
-            :image="'http://localhost:3000/uploads/products/' + product.image"
+            :image="`${import.meta.env.VITE_API_BASE}/uploads/products/${product.image}`"
             :rating="Number(product.rating)"
             @book-clicked="goToBookProduct"
           />
@@ -60,6 +60,8 @@ export default {
   name: 'ExploreView',
   setup() {
     const productStore = useBookStore()
+    
+    
 
     productStore.fetchGenres()
     productStore.fetchProducts()

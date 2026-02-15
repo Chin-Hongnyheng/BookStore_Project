@@ -77,7 +77,7 @@
                 >
                   <img
                     v-if="item.product"
-                    :src="'http://localhost:3000/uploads/products/' + item.product.image"
+                    :src="`${API_BASE_URL}/uploads/products/${item.product.image}`"
                     class="w-8 h-10 object-cover rounded"
                     :alt="item.product?.title"
                   />
@@ -124,7 +124,7 @@
           <div v-if="order.paymentImage" class="mt-4 pt-4 border-t border-gray-100">
             <h4 class="text-sm font-bold text-gray-700 mb-2">Payment Screenshot</h4>
             <img
-              :src="'http://localhost:3000/uploads/payments/' + order.paymentImage"
+              :src="`${API_BASE_URL}/uploads/payments/${order.paymentImage}`"
               class="max-h-48 rounded-lg border border-gray-200 cursor-pointer hover:opacity-80 transition-opacity"
               @click="openImage(order.paymentImage)"
               alt="Payment Screenshot"
@@ -166,7 +166,7 @@
     >
       <div class="max-w-2xl max-h-[80vh]" @click.stop>
         <img
-          :src="'http://localhost:3000/uploads/payments/' + selectedImage"
+          :src="`${API_BASE_URL}/uploads/payments/${selectedImage}`"
           class="max-h-[80vh] rounded-lg"
           alt="Payment Screenshot"
         />
@@ -190,6 +190,7 @@ const loading = ref(true)
 const statusFilter = ref('')
 const showImageModal = ref(false)
 const selectedImage = ref('')
+const API_BASE_URL = import.meta.env.VITE_API_BASE
 
 const filteredOrders = computed(() => {
   if (!statusFilter.value) return orders.value

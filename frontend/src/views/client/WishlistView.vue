@@ -12,7 +12,7 @@
           :price="product.price"
           :discount="product.discount"
           :finalPrice="product.finalPrice"
-          :image="'http://localhost:3000/uploads/products/' + product.image"
+          :image="'https://bookstore-project-4ugp.onrender.com/uploads/products/' + product.image"
           :rating="product.rating"
           @book-clicked="goToBookProduct"
         />
@@ -65,7 +65,7 @@ onMounted(async () => {
   }
 
   try {
-    const res = await axios.get(`http://localhost:3000/wishlists/${userId.value}`)
+    const res = await axios.get(`https://bookstore-project-4ugp.onrender.com/wishlists/${userId.value}`)
 
     wishlist.value = res.data.map((item: any) => {
     const p = item.product

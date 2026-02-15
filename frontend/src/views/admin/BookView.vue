@@ -220,6 +220,7 @@ import Modal from '@/components/admin/Modal.vue'
 const route = useRoute()
 const bookStore = useBookStore()
 const genreStore = useGenreStore()
+const API_BASE_URL = import.meta.env.VITE_API_BASE
 
 const bookGroups = ['New', 'Featured', 'Trending', 'Hot']
 
@@ -290,7 +291,7 @@ const editBook = (book) => {
   formData.rating = book.rating
   formData.reviews = book.reviews
   selectedImageFile.value = null
-  imagePreview.value = book.image ? `http://localhost:3000/uploads/products/${book.image}` : null
+  imagePreview.value = book.image ? `${API_BASE_URL}/uploads/products/${book.image}` : null
   showModal.value = true
 }
 

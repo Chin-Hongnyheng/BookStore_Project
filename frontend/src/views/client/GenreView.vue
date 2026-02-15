@@ -12,7 +12,7 @@
         :price="book.price"
         :discount="book.discount"
         :finalPrice="book.finalPrice"
-        :image="'http://localhost:3000/uploads/products/' + book.image"
+        :image="`${import.meta.env.VITE_API_BASE}/uploads/products/${book.image}`"
         :rating="book.rating"
         @book-clicked="goToBook"
       />

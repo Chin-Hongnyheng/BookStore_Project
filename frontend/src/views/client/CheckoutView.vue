@@ -180,7 +180,7 @@
         <div class="summary-items">
           <div v-for="item in cartStore.items" :key="item.id" class="summary-item">
             <img
-              :src="'http://localhost:3000/uploads/products/' + item.image"
+              :src="`${API_BASE_URL}/uploads/products/${item.image}`"
               :alt="item.title"
               class="summary-item-img"
             />
@@ -235,6 +235,7 @@ const orderId = ref(null)
 const errorMsg = ref('')
 const paymentFile = ref(null)
 const paymentPreview = ref(null)
+const API_BASE_URL = import.meta.env.VITE_API_BASE
 
 /* ─── Telegram deep-link ─── */
 const userId = sessionStorage.getItem('userId')
@@ -248,7 +249,7 @@ let telegramPollTimer = null
 const checkTelegramStatus = async () => {
   if (!userId) return
   try {
-    const { data } = await axios.get(`http://localhost:3000/telegram/status/${userId}`)
+    const { data } = await axios.get(`${API_BASE_URL}/telegram/status/${userId}`)
     telegramConnected.value = data.connected
     if (data.connected && telegramPollTimer) {
       clearInterval(telegramPollTimer)

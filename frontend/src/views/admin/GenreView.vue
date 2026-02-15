@@ -111,6 +111,7 @@ import Modal from '@/components/admin/Modal.vue'
 
 const route = useRoute()
 const genreStore = useGenreStore()
+const API_BASE_URL = import.meta.env.VITE_API_BASE
 
 const showModal = ref(false)
 const isEditing = ref(false)
@@ -157,7 +158,7 @@ const editGenre = (genre) => {
   formData.description = genre.description || ''
   formData.svgIcon = genre.svgIcon || ''
   selectedImageFile.value = null
-  imagePreview.value = genre.image ? `http://localhost:3000/uploads/genres/${genre.image}` : null
+  imagePreview.value = genre.image ? `${API_BASE_URL}/uploads/genres/${genre.image}` : null
   showModal.value = true
 }
 

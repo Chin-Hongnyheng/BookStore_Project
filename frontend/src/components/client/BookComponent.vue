@@ -129,7 +129,7 @@ export default {
       if (!this.userId) return
 
       try {
-        const res = await axios.get(`http://localhost:3000/wishlists/${this.userId}`)
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE}/wishlists/${this.userId}`)
         const productIds = res.data.map((item) => item.product.id)
         this.isWishlisted = productIds.includes(this.product.id)
       } catch (err) {
@@ -148,12 +148,12 @@ export default {
 
       try {
         if (this.isWishlisted) {
-          await axios.post('http://localhost:3000/wishlists', {
+          await axios.post(`${import.meta.env.VITE_API_BASE}/wishlists`, {
             userId: this.userId,
             productIds: [this.product.id],
           })
         } else {
-          await axios.delete(`http://localhost:3000/wishlists/${this.userId}/${this.product.id}`)
+          await axios.delete(`${import.meta.env.VITE_API_BASE}/wishlists/${this.userId}/${this.product.id}`)
         }
       } catch (err) {
         console.error('Wishlist toggle error', err)

@@ -6,7 +6,7 @@
         <div class="column cover-col">
            <div class="cover-wrapper">
             <img
-            :src="'http://localhost:3000/uploads/products/' + book.image"
+            :src="`${import.meta.env.VITE_API_BASE}/uploads/products/${book.image}`"
             class="book-image"
             />
             </div>
@@ -175,7 +175,7 @@ export default {
 
       try {
         const res = await axios.get(
-          `http://localhost:3000/wishlists/${userId.value}`
+          `https://bookstore-project-4ugp.onrender.com/wishlists/${userId.value}`
         )
 
         const productIds = res.data.map((item: any) => item.product.id)
@@ -202,13 +202,13 @@ export default {
 
       try {
         if (isWishlisted.value) {
-          await axios.post('http://localhost:3000/wishlists', {
+          await axios.post('https://bookstore-project-4ugp.onrender.com/wishlists', {
             userId: userId.value,
             productIds: [book.value.id],
           })
         } else {
           await axios.delete(
-            `http://localhost:3000/wishlists/${userId.value}/${book.value.id}`
+            `https://bookstore-project-4ugp.onrender.com/${userId.value}/${book.value.id}`
           )
         }
       } catch (err) {

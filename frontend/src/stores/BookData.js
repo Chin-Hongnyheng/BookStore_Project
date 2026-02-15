@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE
+
 export const useBookStore = defineStore('book', {
   state: () => ({
     products: [],
@@ -174,7 +176,7 @@ export const useBookStore = defineStore('book', {
   actions: {
     async fetchGenres() {
       try {
-        const res = await axios.get('http://localhost:3000/genres')
+        const res = await axios.get(`${API_BASE_URL}/genres`)
         this.genres = res.data
         console.log('Genres fetched successfully')
       } catch (error) {
@@ -184,7 +186,7 @@ export const useBookStore = defineStore('book', {
 
     async fetchProducts() {
       try {
-        const res = await axios.get('http://localhost:3000/products')
+        const res = await axios.get(`${API_BASE_URL}/products`)
         this.products = res.data
         console.log('Products fetched successfully')
       } catch (error) {
@@ -194,7 +196,7 @@ export const useBookStore = defineStore('book', {
 
     async fetchPromotions() {
       try {
-        const res = await axios.get('http://localhost:3000/promotions')
+        const res = await axios.get(`${API_BASE_URL}/promotions`)
         this.promotions = res.data
         console.log('Promotions fetched successfully')
       } catch (error) {
@@ -205,7 +207,7 @@ export const useBookStore = defineStore('book', {
     // NEW: fetch the join table
     async fetchGenreCounts() {
       try {
-        const res = await axios.get('http://localhost:3000/product_genres/count')
+        const res = await axios.get(`${API_BASE_URL}/product_genres/count`)
         this.genreCounts = res.data
         console.log('GenreCounts fetched successfully')
       } catch (error) {
@@ -214,7 +216,7 @@ export const useBookStore = defineStore('book', {
     },
     async fetchNewArrivals() {
       try {
-        const res = await axios.get('http://localhost:3000/new-arrivals')
+        const res = await axios.get(`${API_BASE_URL}/new-arrivals`)
         this.newArrivals = res.data
         console.log('New arrivals fetched successfully')
       } catch (error) {
@@ -223,7 +225,7 @@ export const useBookStore = defineStore('book', {
     },
     async fetchRecommendation() {
       try {
-        const res = await axios.get('http://localhost:3000/recommendations')
+        const res = await axios.get(`${API_BASE_URL}/recommendations`)
         this.Recommendations = res.data
         console.log('Recommendation fetched successfully')
       } catch (error) {

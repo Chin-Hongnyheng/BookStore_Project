@@ -110,7 +110,7 @@ const handleRegister = async () => {
   }
 
   try {
-    await axios.post('http://localhost:3001/auth/register', {
+    await axios.post('https://auth-service-5o4z.onrender.com/auth/register', {
       username: username.value,
       email: email.value,
       password: password.value,

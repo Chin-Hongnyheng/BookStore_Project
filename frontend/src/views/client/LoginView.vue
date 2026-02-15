@@ -85,6 +85,7 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { useRouter } from "vue-router";
 import axios from "axios";
 
+
 const router = useRouter();
 const faUserIcon = faUser;
 const faLockIcon = faLock;
@@ -120,7 +121,7 @@ const login = async () => {
   }
 
   try {
-    const res = await axios.post("http://localhost:3001/auth/login", {
+    const res = await axios.post("https://auth-service-5o4z.onrender.com/auth/login", {
       username: username.value,
       password: password.value,
     });

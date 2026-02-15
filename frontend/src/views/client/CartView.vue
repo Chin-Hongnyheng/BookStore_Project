@@ -16,7 +16,7 @@
       <div class="cart-items">
         <div v-for="item in cartStore.items" :key="item.id" class="cart-item">
           <img
-            :src="'http://localhost:3000/uploads/products/' + item.image"
+            :src="`${API_BASE_URL}/uploads/products/${item.image}`"
             :alt="item.title"
             class="item-image"
           />
@@ -105,6 +105,7 @@ const cartStore = useCartStore()
 const couponCode = ref('')
 const couponLoading = ref(false)
 const couponError = ref('')
+const API_BASE_URL = import.meta.env.VITE_API_BASE
 
 const increaseQty = (id) => {
   const item = cartStore.items.find((i) => i.id === id)
