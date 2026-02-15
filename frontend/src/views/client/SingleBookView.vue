@@ -89,169 +89,125 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { useBookStore } from '@/stores/BookData'
-import { useCartStore } from '@/stores/cartStore'
 import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faHeart as farHeart } from '@fortawesome/free-regular-svg-icons'
 
-export default {
-  name: 'BookView',
-  components: { FontAwesomeIcon },
+// -----------------------------
+// JS STORES (ignore TS errors for now)
+// -----------------------------
+ // @ts-ignore
+import { useBookStore } from '@/stores/BookData'
+ // @ts-ignore
+import { useCartStore } from '@/stores/cartStore'
 
-  setup() {
-    const route = useRoute()
-    const bookStore = useBookStore()
-    const cartStore = useCartStore()
+const route = useRoute()
+const bookStore = useBookStore()
+const cartStore = useCartStore()
 
-    const book = ref<any>(null)
-    const justAdded = ref(false)
-    const isWishlisted = ref(false)
-    const userId = ref<number | null>(null)
+const book = ref<any>(null)
+const justAdded = ref(false)
+const isWishlisted = ref(false)
+const userId = ref<number | null>(null)
 
-    // -----------------------------
-    // LOAD BOOK
-    // -----------------------------
-    const loadBook = async () => {
-      const id = Number(route.params.id)
+// -----------------------------
+// LOAD BOOK
+// -----------------------------
+const loadBook = async () => {
+  const id = Number(route.params.id)
 
-      if (!bookStore.products.length) {
-        await bookStore.fetchProducts()
-      }
+  if (!bookStore.products.length) await bookStore.fetchProducts()
 
-      book.value =
-        bookStore.discountedProducts.find(p => Number(p.id) === id) || null
+  book.value =
+    bookStore.discountedProducts.find((p: any) => Number(p.id) === id) || null
 
-      if (book.value) {
-        await checkWishlist()
-      }
-    }
-
-    // -----------------------------
-    // ADD TO CART
-    // -----------------------------
-    const handleAddToCart = () => {
-      if (!book.value) return
-
-      cartStore.addToCart(book.value)
-
-      justAdded.value = true
-      setTimeout(() => {
-        justAdded.value = false
-      }, 1500)
-    }
-
-    // -----------------------------
-    // JWT PARSE
-    // -----------------------------
-    const parseJwt = (token: string) => {
-      try {
-        const base64Url = token.split('.')[1]
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
-        return JSON.parse(atob(base64))
-      } catch {
-        return null
-      }
-    }
-
-    const getUserId = () => {
-      const token = sessionStorage.getItem('token')
-      if (!token) return
-
-      const payload = parseJwt(token)
-      if (payload) {
-        userId.value = payload.sub
-      }
-    }
-
-    // -----------------------------
-    // CHECK WISHLIST
-    // -----------------------------
-    const checkWishlist = async () => {
-      if (!userId.value || !book.value) return
-
-      try {
-        const res = await axios.get(
-          `https://bookstore-project-4ugp.onrender.com/wishlists/${userId.value}`
-        )
-
-        const productIds = res.data.map((item: any) => item.product.id)
-
-        isWishlisted.value = productIds.includes(book.value.id)
-      } catch (err) {
-        console.error('Wishlist fetch error', err)
-      }
-    }
-
-    // -----------------------------
-    // TOGGLE WISHLIST
-    // -----------------------------
-    const toggleWishlist = async () => {
-      if (!userId.value) {
-        alert('Please login first')
-        return
-      }
-
-      if (!book.value) return
-
-      const previousState = isWishlisted.value
-      isWishlisted.value = !isWishlisted.value
-
-      try {
-        if (isWishlisted.value) {
-          await axios.post('https://bookstore-project-4ugp.onrender.com/wishlists', {
-            userId: userId.value,
-            productIds: [book.value.id],
-          })
-        } else {
-          await axios.delete(
-            `https://bookstore-project-4ugp.onrender.com/${userId.value}/${book.value.id}`
-          )
-        }
-      } catch (err) {
-        console.error('Wishlist toggle error', err)
-        isWishlisted.value = previousState
-        alert('Failed to update wishlist.')
-      }
-    }
-
-    // -----------------------------
-    // FORMAT DATE
-    // -----------------------------
-    const formatDate = (dateStr: string) => {
-      if (!dateStr) return 'N/A'
-      const date = new Date(dateStr)
-      return date.toLocaleDateString('en-GB', {
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric',
-      })
-    }
-
-    // -----------------------------
-    // LIFECYCLE
-    // -----------------------------
-    onMounted(() => {
-      getUserId()
-      loadBook()
-    })
-
-    watch(() => route.params.id, loadBook)
-
-    return {
-      book,
-      formatDate,
-      handleAddToCart,
-      toggleWishlist,
-      justAdded,
-      isWishlisted,
-      farHeart,
-    }
-  },
+  if (book.value) await checkWishlist()
 }
+
+// -----------------------------
+// ADD TO CART
+// -----------------------------
+const handleAddToCart = () => {
+  if (!book.value) return
+  cartStore.addToCart(book.value)
+  justAdded.value = true
+  setTimeout(() => { justAdded.value = false }, 1500)
+}
+
+// -----------------------------
+// JWT PARSE
+// -----------------------------
+const parseJwt = (token: string) => {
+  try {
+    const base64Url = token.split('.')[1]
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+    return JSON.parse(atob(base64))
+  } catch {
+    return null
+  }
+}
+
+const getUserId = () => {
+  const token = sessionStorage.getItem('token')
+  if (!token) return
+  const payload = parseJwt(token)
+  if (payload) userId.value = payload.sub
+}
+
+// -----------------------------
+// CHECK WISHLIST
+// -----------------------------
+const checkWishlist = async () => {
+  if (!userId.value || !book.value) return
+  try {
+    const res = await axios.get(`https://bookstore-project-4ugp.onrender.com/wishlists/${userId.value}`)
+    const productIds = res.data.map((item: any) => item.product.id)
+    isWishlisted.value = productIds.includes(book.value.id)
+  } catch (err) {
+    console.error('Wishlist fetch error', err)
+  }
+}
+
+// -----------------------------
+// TOGGLE WISHLIST
+// -----------------------------
+const toggleWishlist = async () => {
+  if (!userId.value) { alert('Please login first'); return }
+  if (!book.value) return
+
+  const prev = isWishlisted.value
+  isWishlisted.value = !isWishlisted.value
+
+  try {
+    if (isWishlisted.value) {
+      await axios.post('https://bookstore-project-4ugp.onrender.com/wishlists', {
+        userId: userId.value,
+        productIds: [book.value.id],
+      })
+    } else {
+      await axios.delete(`https://bookstore-project-4ugp.onrender.com/${userId.value}/${book.value.id}`)
+    }
+  } catch (err) {
+    console.error('Wishlist toggle error', err)
+    isWishlisted.value = prev
+    alert('Failed to update wishlist.')
+  }
+}
+
+// -----------------------------
+// FORMAT DATE
+// -----------------------------
+const formatDate = (dateStr: string) => {
+  if (!dateStr) return 'N/A'
+  const date = new Date(dateStr)
+  return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })
+}
+
+onMounted(() => { getUserId(); loadBook() })
+watch(() => route.params.id, loadBook)
 </script>
 
 
